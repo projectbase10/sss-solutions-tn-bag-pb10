@@ -9,6 +9,8 @@ export interface AttendanceStats {
   ot_hours: number;
   food: number;
   uniform: number;
+  rent_deduction: number;
+  advance: number;
 }
 
 export const fetchAttendanceStats = async (selectedMonth: string): Promise<Record<string, AttendanceStats>> => {
@@ -30,7 +32,7 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
 
   const { data, error } = await supabase
     .from('attendance')
-    .select('employee_id, status, check_in_time, check_out_time, notes, present_days, absent_days, late_days, ot_hours, food, uniform, month')
+    .select('employee_id, status, check_in_time, check_out_time, notes, present_days, absent_days, late_days, ot_hours, food, uniform, rent_deduction, advance, month')
     .gte('date', startOfMonth)
     .lte('date', endOfMonth);
 
@@ -54,6 +56,8 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
         ot_hours: 0,
         food: 0,
         uniform: 0,
+        rent_deduction: 0,
+        advance: 0,
       };
     }
 
@@ -66,7 +70,9 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
       (record.late_days && record.late_days > 0) ||
       (record.ot_hours && record.ot_hours > 0) ||
       (record.food && record.food > 0) ||
-      (record.uniform && record.uniform > 0);
+      (record.uniform && record.uniform > 0) ||
+      (record.rent_deduction && record.rent_deduction > 0) ||
+      (record.advance && record.advance > 0);
     
     if (hasDirectValues) {
       stats.present_days += Number(record.present_days || 0);
@@ -75,6 +81,8 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
       stats.ot_hours += Number(record.ot_hours || 0);
       stats.food += Number(record.food || 0);
       stats.uniform += Number(record.uniform || 0);
+      stats.rent_deduction += Number(record.rent_deduction || 0);
+      stats.advance += Number(record.advance || 0);
       return;
     }
 
@@ -90,6 +98,8 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
           stats.ot_hours += parsedNotes.ot_hours || 0;
           stats.food += parsedNotes.food || 0;
           stats.uniform += parsedNotes.uniform || 0;
+          stats.rent_deduction += parsedNotes.rent_deduction || 0;
+          stats.advance += parsedNotes.advance || 0;
           return;
         }
       }

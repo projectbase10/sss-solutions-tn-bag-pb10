@@ -49,6 +49,8 @@ export interface PayslipData {
     per_day_salary?: number;
     day_rate?: number; // Added to mirror Excel calc path
     da_amount?: number;
+    shoe_uniform_allowance?: number;
+    other_allowances?: number;
   };
   branch: {
     name: string;
@@ -115,7 +117,10 @@ export const drawPayslipSection = (
     ? employee.per_day_salary
     : (employee.day_rate && employee.day_rate > 0)
       ? employee.day_rate
-      : (employee.basic_salary || 0) + (employee.da_amount || 0);
+      : (employee.basic_salary || 0) / 30; // Fallback to basic_salary/30 if no per day rate
+
+  // Fetch branch OT rate (default 60 if not available)
+  const branchOTRate = 60;
 
   const basicRate = perDaySalary * 0.60;
   const daRate = perDaySalary * 0.40;
@@ -125,15 +130,18 @@ export const drawPayslipSection = (
 
   const fb_basicPlusDA = basicEarned + daEarned;
   const fb_hraAmount = employee.hra || 0;
-  const fb_allowancesAmount = employee.allowances || 0;
-  const fb_otAmount = Math.round((stats.ot_hours || 0) * 60);
+  const fb_allowancesAmount = (employee.allowances || 0) + (employee.shoe_uniform_allowance || 0);
+  const fb_otAmount = Math.round((stats.ot_hours || 0) * branchOTRate);
   const fb_grossEarnings = fb_basicPlusDA + fb_hraAmount + fb_allowancesAmount + fb_otAmount;
 
   const pfBase = basicEarned + daEarned;
   const fb_pf = Math.min(Math.round(pfBase * 0.12), 1800);
+  
+  // ESI calculation - 0.75% of eligible earnings, only if employee is ESI eligible
+  const isESIEligible = employee.esi_number && employee.esi_number.trim() !== '';
   const specialBranches = ['UP-TN', 'UP-BAG'];
-  const esiBase = specialBranches.includes(branch.name) ? pfBase : pfBase + fb_otAmount; // include OT for non-special branches
-  const fb_esi = Math.round(esiBase * 0.0075);
+  const esiBase = specialBranches.includes(branch.name) ? pfBase : pfBase + fb_otAmount;
+  const fb_esi = isESIEligible ? Math.round(esiBase * 0.0075) : 0;
 
   const foodDeduction = (payroll?.food ?? stats.food ?? 0);
   const uniformDeduction = (payroll?.uniform ?? stats.uniform ?? 0);
@@ -275,18 +283,18 @@ export const drawPayslipSection = (
     ['Basic + D.A', basicPlusDA.toFixed(2)],
     ['HRA', hraAmount.toFixed(2)],
     ['Allowance', allowancesAmount.toFixed(2)],
-    ['Incentive', '0.00'],
+    ['Incentive', (employee.other_allowances || 0).toFixed(2)],
     ['Overtime Amount', otAmount.toFixed(2)],
-    ['Trim Allowance', '0.00']
+    ['Trim Allowance', (employee.shoe_uniform_allowance || 0).toFixed(2)]
   ];
   
   const deductions = [
     ['PF', pf.toFixed(2)],
     ['ESI', esi > 0 ? esi.toFixed(2) : 'N/A'],
-    ['Rent Deduction', (payroll?.rent_deduction ?? stats.rent_deduction ?? 0).toFixed(2)],
-    ['Advance', (payroll?.advance ?? stats.advance ?? 0).toFixed(2)],
-    ['Uniform', (payroll?.uniform ?? stats.uniform ?? 0).toFixed(2)],
-    ['Other', '0.00']
+    ['Rent Deduction', rentDeduction.toFixed(2)],
+    ['Advance', advanceDeduction.toFixed(2)],
+    ['Uniform', uniformDeduction.toFixed(2)],
+    ['Food', foodDeduction.toFixed(2)]
   ];
   
   let dataY = tableStartY + 4;

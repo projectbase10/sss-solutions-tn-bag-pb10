@@ -752,7 +752,9 @@ const Attendance = () => {
             esi_number: employee.esi_number || '',
             per_day_salary: employee.per_day_salary || 0,
             day_rate: employee.day_rate || 0,
-            da_amount: employee.da_amount || 0
+            da_amount: employee.da_amount || 0,
+            shoe_uniform_allowance: employee.shoe_uniform_allowance || 0,
+            other_allowances: employee.other_allowances || 0
           },
           branch: {
             name: branch?.name || 'N/A'
@@ -763,7 +765,9 @@ const Attendance = () => {
             late_days: stats?.late_days || 0,
             ot_hours: stats?.ot_hours || 0,
             food: stats?.food || 0,
-            uniform: stats?.uniform || 0
+            uniform: stats?.uniform || 0,
+            rent_deduction: stats?.rent_deduction || 0,
+            advance: stats?.advance || 0
           },
           payroll: payrollRecord ? {
             basic_plus_da: payrollRecord.basic_plus_da || 0,
@@ -779,7 +783,8 @@ const Attendance = () => {
             food: payrollRecord.food || 0,
             uniform: payrollRecord.uniform || 0,
             rent_deduction: payrollRecord.rent_deduction || 0,
-            shoe_uniform_allowance: payrollRecord.shoe_uniform_allowance || 0
+            shoe_uniform_allowance: payrollRecord.shoe_uniform_allowance || 0,
+            advance: payrollRecord.advance || 0
           } : undefined,
           month: exportMonth
         };

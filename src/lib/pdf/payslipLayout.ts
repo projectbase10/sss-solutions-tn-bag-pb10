@@ -305,8 +305,8 @@ export const drawPayslipSection = (
     ['Food', foodDeduction.toFixed(2)]
   ];
   
-  let dataY = tableStartY + 4;
-  const dataLineHeight = 4.2;
+  let dataY = tableStartY + 6; // Increased spacing from 4 to 6
+  const dataLineHeight = 4.5; // Increased from 4.2 to 4.5 for better spacing
   const maxRows = Math.max(earnings.length, deductions.length); // Display all rows
   
   for (let i = 0; i < maxRows; i++) {
@@ -321,8 +321,8 @@ export const drawPayslipSection = (
     dataY += dataLineHeight;
   }
   
-  // Totals - positioned after table data
-  let totalsY = dataY + 2;
+  // Totals - positioned after table data with more spacing
+  let totalsY = dataY + 4; // Increased spacing from 2 to 4
   
   doc.setFont(undefined, 'bold');
   doc.setFontSize(8);

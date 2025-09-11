@@ -83,6 +83,7 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
       stats.uniform += Number(record.uniform || 0);
       stats.rent_deduction += Number(record.rent_deduction || 0);
       stats.advance += Number(record.advance || 0);
+      console.log(`Direct columns for ${record.employee_id}: rent=${record.rent_deduction}, advance=${record.advance}`);
       return;
     }
 

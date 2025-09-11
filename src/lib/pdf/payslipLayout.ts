@@ -147,6 +147,14 @@ export const drawPayslipSection = (
   const uniformDeduction = (payroll?.uniform ?? stats.uniform ?? 0);
   const rentDeduction = (payroll?.rent_deduction ?? stats.rent_deduction ?? 0);
   const advanceDeduction = (payroll?.advance ?? stats.advance ?? 0);
+  
+  console.log('=== PDF DEDUCTIONS DEBUG ===');
+  console.log('Employee:', employee.name);
+  console.log('Food:', foodDeduction, 'Uniform:', uniformDeduction);
+  console.log('Rent Deduction:', rentDeduction, 'Advance:', advanceDeduction);
+  console.log('Stats rent_deduction:', stats.rent_deduction, 'Stats advance:', stats.advance);
+  console.log('Payroll rent_deduction:', payroll?.rent_deduction, 'Payroll advance:', payroll?.advance);
+  
   const fb_totalDeductions = fb_pf + fb_esi + foodDeduction + uniformDeduction + rentDeduction + advanceDeduction;
   const fb_netPay = fb_grossEarnings - fb_totalDeductions;
 

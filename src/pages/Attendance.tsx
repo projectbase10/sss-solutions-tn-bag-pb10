@@ -582,6 +582,8 @@ const Attendance = () => {
       const rentDeduction = attendanceRecord?.rent_deduction || 0;
       const advance = attendanceRecord?.advance || 0;
       
+      console.log(`Excel export - Employee: ${employee.name}, Rent: ${rentDeduction}, Advance: ${advance}`);
+      
       // Parse notes for additional data like allowance
       let allowanceAmount = 0;
       if (attendanceRecord?.notes) {

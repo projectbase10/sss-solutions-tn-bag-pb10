@@ -42,6 +42,7 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
     pf_12_percent: payrollRecord?.pf_12_percent || 0,
     esi_0_75_percent: payrollRecord?.esi_0_75_percent || 0,
     rent_deduction: payrollRecord?.rent_deduction || 0,
+    advance: payrollRecord?.advance || 0,
     food: payrollRecord?.food || 0,
     shoe_uniform_allowance: payrollRecord?.shoe_uniform_allowance || 0,
     uniform: payrollRecord?.uniform || 0,
@@ -68,6 +69,7 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
         day_salary: dayRate,
         ot_rate: daRate * 1.5, // 1.5x overtime rate
         rent_deduction: selectedEmployee.rent_deduction || 0,
+        advance: selectedEmployee.advance || 0,
         shoe_uniform_allowance: selectedEmployee.shoe_uniform_allowance || 0,
       }));
     }
@@ -102,11 +104,12 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
     // Calculate ESI (0.75% of Gross Earnings, 0 if > ₹21,000)
     const esi075Percent = grossEarnings > 21000 ? 0 : Math.round(grossEarnings * 0.0075);
 
-    // Calculate total deductions (PF + ESI + Rent + Food + Uniform - Shoe & Uniform Allowance)
+    // Calculate total deductions (PF + ESI + Rent + Advance + Food + Uniform - Shoe & Uniform Allowance)
     const totalDeductions = Math.round(
       pf12Percent + 
       esi075Percent + 
       formData.rent_deduction + 
+      formData.advance + 
       formData.food + 
       formData.uniform - 
       formData.shoe_uniform_allowance
@@ -134,6 +137,7 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
     formData.ot_hours,
     formData.ot_rate,
     formData.rent_deduction,
+    formData.advance,
     formData.food,
     formData.uniform,
     formData.shoe_uniform_allowance
@@ -143,7 +147,7 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
     const { name, value } = e.target;
     const numericFields = [
       'worked_days', 'ot_hours', 'ot_rate', 'basic_salary', 'da_amount', 
-      'day_salary', 'rent_deduction', 'food', 'uniform', 'shoe_uniform_allowance'
+      'day_salary', 'rent_deduction', 'advance', 'food', 'uniform', 'shoe_uniform_allowance'
     ];
     
     setFormData(prev => ({
@@ -435,6 +439,16 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
                     name="rent_deduction" 
                     type="number" 
                     value={formData.rent_deduction} 
+                    onChange={handleInputChange}
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="advance">Advance Deduction</Label>
+                  <Input 
+                    id="advance" 
+                    name="advance" 
+                    type="number" 
+                    value={formData.advance} 
                     onChange={handleInputChange}
                   />
                 </div>

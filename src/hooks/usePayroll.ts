@@ -36,6 +36,7 @@ export interface PayrollRecord {
   uniform?: number | null;
   lunch?: number | null;
   rent_deduction?: number | null;
+  advance?: number | null;
   shoe_uniform_allowance?: number | null;
   take_home?: number | null;
   created_at: string;

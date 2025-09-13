@@ -258,7 +258,7 @@ export const drawPayslipSection = (
     [`Designation: ${employee.position || ''}`, `Date of Join: ${employee.join_date || ''}`],
     [`Report Month: ${new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' })}`, `Working Days: ${workedDays}`],
     [`PF: ${employee.pf_number || 'N/A'}`, `OT Hrs: ${stats.ot_hours.toFixed(1)} hrs`],
-    [`ESI: ${employee.esi_number || 'N/A'}`, `Working Days: ${workedDays}`]
+    [`ESI: ${employee.esi_number || 'N/A'}`, ``]
   ];
   
   let infoY = headerBottom + 4;

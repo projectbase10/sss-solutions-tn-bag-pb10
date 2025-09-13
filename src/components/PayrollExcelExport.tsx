@@ -135,7 +135,11 @@ const PayrollExcelExport = () => {
 
     try {
       const { default: jsPDF } = await import('jspdf');
-      const doc = new jsPDF();
+      const doc = new jsPDF({
+        orientation: 'portrait',
+        unit: 'mm',
+        format: [210, 297]
+      });
       
       doc.setFontSize(16);
       doc.text('Payroll Report', 20, 20);

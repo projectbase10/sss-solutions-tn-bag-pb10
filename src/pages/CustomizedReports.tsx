@@ -148,9 +148,9 @@ const CustomizedReports = () => {
       }
 
       const doc = new jsPDF({
-        orientation: 'landscape',
+        orientation: 'portrait',
         unit: 'mm',
-        format: 'a4'
+        format: [210, 297]
       });
 
       let currentY = 15; // Start with top margin

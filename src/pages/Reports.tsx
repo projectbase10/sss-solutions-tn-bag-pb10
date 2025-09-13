@@ -206,7 +206,11 @@ const Reports = () => {
       if (!jsPDF) {
         // Dynamically import jsPDF
         import('jspdf').then(async (jsPDFModule) => {
-          const doc = new jsPDFModule.default();
+          const doc = new jsPDFModule.default({
+            orientation: 'portrait',
+            unit: 'mm',
+            format: [210, 297]
+          });
           
           // Add title
           doc.setFontSize(16);

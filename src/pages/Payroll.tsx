@@ -338,11 +338,11 @@ const Payroll = () => {
     const branch = branches.find(b => b.id === employee.branch_id);
     const branchName = branch?.name || 'N/A';
 
-    // Create PDF using jsPDF with portrait orientation
+    // Create PDF using jsPDF with portrait orientation  
     const doc = new jsPDF({
       orientation: 'portrait',
       unit: 'mm',
-      format: 'a4'
+      format: [210, 297]
     });
 
     // Company Header

@@ -238,6 +238,11 @@ export const drawPayslipSection = (
   
   doc.text(branchText, startX + availableWidth - contentPadding - 2, yPos + 8, { align: 'right' });
   
+  // Add Generated text on the left side of the branch name line
+  doc.setFontSize(7);
+  doc.setFont(undefined, 'normal');
+  doc.text(`Generated: ${new Date().toLocaleDateString()}`, startX + contentPadding, yPos + 8);
+  
   // Draw line under payslip header
   doc.setLineWidth(0.3);
   doc.line(startX + contentPadding, yPos + 15, startX + availableWidth - contentPadding, yPos + 15);
@@ -252,8 +257,8 @@ export const drawPayslipSection = (
     [`Emp No: ${employee.employee_id || ''}`, `Employee Name: ${employee.name || ''}`],
     [`Designation: ${employee.position || ''}`, `Date of Join: ${employee.join_date || ''}`],
     [`Report Month: ${new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' })}`, `Working Days: ${workedDays}`],
-    [`Generated: ${new Date().toLocaleDateString()}`, `OT Hrs: ${stats.ot_hours.toFixed(1)} hrs`],
-    [`PF: ${employee.pf_number || 'N/A'}`, `ESI: ${employee.esi_number || 'N/A'}`]
+    [`PF: ${employee.pf_number || 'N/A'}`, `OT Hrs: ${stats.ot_hours.toFixed(1)} hrs`],
+    [`ESI: ${employee.esi_number || 'N/A'}`, `Working Days: ${workedDays}`]
   ];
   
   let infoY = headerBottom + 4;

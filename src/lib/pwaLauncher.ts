@@ -9,11 +9,31 @@ export interface PWALaunchResult {
 }
 
 /**
- * Attempts to launch the UP Branch PWA at https://sss.up.marzelet.com/
+ * Attempts to launch the Other Branch PWA at https://sss.marzelet.com/
  * Falls back to opening in browser if PWA is not available
+ * Uses conditional navigation: same-tab if current app is PWA, new tab otherwise
  */
 export async function launchUPBranchPWA(): Promise<PWALaunchResult> {
-  const targetUrl = 'https://sss.up.marzelet.com/';
+  const targetUrl = 'https://sss.marzelet.com/';
+  
+  // Check if current app is running as PWA
+  const isPWA = window.matchMedia('(display-mode: standalone)').matches ||
+               (window.navigator as any).standalone ||
+               document.referrer.includes('android-app://');
+  
+  // If we're already in a PWA, navigate in same tab
+  if (isPWA) {
+    try {
+      window.location.href = targetUrl;
+      return {
+        success: true,
+        method: 'pwa',
+        message: 'Navigated in same tab (PWA)'
+      };
+    } catch (error) {
+      console.error('Failed to navigate in same tab:', error);
+    }
+  }
   
   try {
     // First attempt: Try to detect if the PWA is installed
@@ -21,7 +41,7 @@ export async function launchUPBranchPWA(): Promise<PWALaunchResult> {
       try {
         const relatedApps = await (navigator as any).getInstalledRelatedApps();
         const targetApp = relatedApps.find((app: any) => 
-          app.url && app.url.includes('sss.up.marzelet.com')
+          app.url && app.url.includes('sss.marzelet.com')
         );
         
         if (targetApp) {

@@ -92,7 +92,9 @@ const EnhancedPayrollTable = () => {
                 
                 // Calculate deductions
                 const pfAmount = Math.min(Math.round(earnedBasic * 0.12), 1800); // Cap PF at 1800
-                const esiAmount = Math.round(grossEarnings * 0.0075);
+                // ESI calculation - Basic + DA only (OT excluded)
+                const esiBaseAmount = earnedBasic + earnedDA;
+                const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
                 const rentDeduction = Math.round(record.rent_deduction || 0);
                 const advance = 0; // Will be added later from employee data
                 const foodDeduction = Math.round(record.food || 0);

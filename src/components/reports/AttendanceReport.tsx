@@ -181,21 +181,11 @@ const AttendanceReport = () => {
       // PF calculation (12% of basic + DA earned, max 1800)
       const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
       
-      // ESI calculation - capped at 21,000
-      let esiAmount = 0;
+      // ESI calculation - Basic + DA only (OT excluded)
+      const esiBaseAmount = basicEarned + daEarned;
+      const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
       
-      // ESI base = Basic earned + DA earned + (OT for non-special branches)
-      let esiBaseAmount = basicEarned + daEarned;
-      
-      if (!isSpecialESIBranch) {
-        esiBaseAmount += extraHours; // Include OT for non-special branches
-      }
-      
-      // Cap the ESI calculation at 21,000
-      const cappedEsiBase = Math.min(esiBaseAmount, 21000);
-      esiAmount = cappedEsiBase > 0 ? Math.round(cappedEsiBase * 0.0075) : 0;
-      
-      const takeHome = grossEarnings - pfAmount - esiAmount;
+      const takeHome = grossEarnings - pfAmount - esiAmount + extraHours;
 
       // Use nullish coalescing and safe string conversion to preserve 0 values
       const safeValue = (val: any) => val ?? '';

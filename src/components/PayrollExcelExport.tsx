@@ -306,13 +306,15 @@ const PayrollExcelExport = () => {
           const uncappedPf = Math.round((earnedBasic + earnedDA) * 0.12);
           const cappedPf = Math.min(uncappedPf, 1800);
           
-          const esi = Math.round(cappedGrossEarnings * 0.0075);
+           // ESI calculation - Basic + DA only (OT excluded)
+           const esiBaseAmount = earnedBasic + earnedDA;
+           const esi = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
           const rentDeduction = Math.round(Number(record.rent_deduction || 0));
           const foodDeduction = Math.round(Number(record.food || 0));
           const shoeUniformAllowance = Math.round(Number(record.shoe_uniform_allowance || 0));
           
-          const totalDeduction = cappedPf + esi + rentDeduction + 0 + foodDeduction - shoeUniformAllowance;
-          const takeHome = cappedGrossEarnings - totalDeduction;
+           const totalDeduction = cappedPf + esi + rentDeduction + 0 + foodDeduction - shoeUniformAllowance;
+           const takeHome = cappedGrossEarnings - totalDeduction + extraHours;
           
           return {
             'Sl No': index + 1,

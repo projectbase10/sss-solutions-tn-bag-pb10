@@ -137,11 +137,10 @@ export const drawPayslipSection = (
   const pfBase = basicEarned + daEarned;
   const fb_pf = Math.min(Math.round(pfBase * 0.12), 1800);
   
-  // ESI calculation - 0.75% of eligible earnings, only if employee is ESI eligible
+  // ESI calculation - 0.75% of Basic + DA only (OT excluded), only if employee is ESI eligible
   const isESIEligible = employee.esi_number && employee.esi_number.trim() !== '';
-  const specialBranches = ['UP-TN', 'UP-BAG'];
-  const esiBase = specialBranches.includes(branch.name) ? pfBase : pfBase + fb_otAmount;
-  const fb_esi = isESIEligible ? Math.round(esiBase * 0.0075) : 0;
+  const esiBase = pfBase; // Only Basic + DA (no OT)
+  const fb_esi = isESIEligible && esiBase <= 21000 ? Math.round(esiBase * 0.0075) : 0;
 
   const foodDeduction = (payroll?.food ?? stats.food ?? 0);
   const uniformDeduction = (payroll?.uniform ?? stats.uniform ?? 0);
@@ -156,7 +155,7 @@ export const drawPayslipSection = (
   console.log('Payroll rent_deduction:', payroll?.rent_deduction, 'Payroll advance:', payroll?.advance);
   
   const fb_totalDeductions = fb_pf + fb_esi + foodDeduction + uniformDeduction + rentDeduction + advanceDeduction;
-  const fb_netPay = fb_grossEarnings - fb_totalDeductions;
+  const fb_netPay = fb_grossEarnings - fb_totalDeductions + fb_otAmount;
 
   // Prefer payroll values when present and > 0, otherwise fallback
   basicPlusDA = (payroll?.basic_plus_da && payroll.basic_plus_da > 0) ? payroll.basic_plus_da : fb_basicPlusDA;

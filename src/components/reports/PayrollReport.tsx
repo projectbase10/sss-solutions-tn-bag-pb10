@@ -62,9 +62,11 @@ const PayrollReport = () => {
       
       // Calculate deductions (PF on basic + DA only)
       const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
-      const esiAmount = Math.round((basicEarned + daEarned + otAmount) * 0.0075);
+      // ESI calculation - Basic + DA only (OT excluded)
+      const esiBaseAmount = basicEarned + daEarned;
+      const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
       const totalDeductions = pfAmount + esiAmount + (record.rent_deduction || 0) + (record.food || 0);
-      const netPay = grossEarnings - totalDeductions + (record.shoe_uniform_allowance || 0);
+      const netPay = grossEarnings - totalDeductions + (record.shoe_uniform_allowance || 0) + otAmount;
       
       if (!monthData[month]) {
         monthData[month] = { month, amount: 0, count: 0 };
@@ -98,9 +100,11 @@ const PayrollReport = () => {
         
         // Calculate deductions (PF on basic + DA only)
         const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
-        const esiAmount = Math.round((basicEarned + daEarned + otAmount) * 0.0075);
+        // ESI calculation - Basic + DA only (OT excluded)
+        const esiBaseAmount = basicEarned + daEarned;
+        const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
         const totalDeductions = pfAmount + esiAmount + (record.rent_deduction || 0) + (record.food || 0);
-        const netPay = grossEarnings - totalDeductions + (record.shoe_uniform_allowance || 0);
+        const netPay = grossEarnings - totalDeductions + (record.shoe_uniform_allowance || 0) + otAmount;
 
         return {
           'Month': record.month || 'N/A',

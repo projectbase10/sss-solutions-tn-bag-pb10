@@ -176,13 +176,9 @@ const EnhancedGenerateReportsDialog: React.FC<EnhancedGenerateReportsDialogProps
         const daEarned = daPerDay * workedDays;
         const otAmount = Math.round(otHours * 60);
 
-        // ESI calculation - branch specific logic
-        let esiWages = basicEarned + daEarned;
-        if (!isSpecialESIBranch) {
-          esiWages += otAmount; // Include OT for non-special branches
-        }
-        
-        const esiAmount = Math.round(esiWages * 0.0075);
+        // ESI calculation - Basic + DA only (OT excluded)
+        const esiWages = basicEarned + daEarned;
+        const esiAmount = esiWages > 21000 ? 0 : Math.round(esiWages * 0.0075);
 
         return {
           'S.No': index + 1,

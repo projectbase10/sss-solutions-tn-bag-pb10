@@ -139,12 +139,9 @@ const EnhancedPayrollExcelExport: React.FC = () => {
         // PF calculation (12% of basic + DA earned, max 1800)
         const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
         
-        // ESI calculation - branch specific logic
-        let esiBaseAmount = basicEarned + daEarned;
-        if (!isSpecialESIBranch) {
-          esiBaseAmount += extraHours; // Include OT for non-special branches
-        }
-        const esiAmount = Math.round(esiBaseAmount * 0.0075);
+        // ESI calculation - Basic + DA only (OT excluded for all branches)
+        const esiBaseAmount = basicEarned + daEarned;
+        const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
         
         const rentDeduction = Math.round(record.rent_deduction || 0);
         const advance = 0;
@@ -152,7 +149,7 @@ const EnhancedPayrollExcelExport: React.FC = () => {
         const shoeUniformAllowance = Math.round(record.shoe_uniform_allowance || 0);
         
         const totalDeduction = pfAmount + esiAmount + rentDeduction + advance + food - shoeUniformAllowance;
-        const takeHome = grossEarnings - totalDeduction;
+        const takeHome = grossEarnings - totalDeduction + extraHours;
 
         return {
           'S No': index + 1,

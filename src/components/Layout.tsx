@@ -106,8 +106,8 @@ const Layout: React.FC<LayoutProps> = ({
     href: '/check',
     icon: Calculator
   }, {
-    name: 'UP Branch',
-    href: '/up-branch',
+    name: 'Other Branch',
+    href: '/other-branch',
     icon: ExternalLink,
     isExternal: true
   }];

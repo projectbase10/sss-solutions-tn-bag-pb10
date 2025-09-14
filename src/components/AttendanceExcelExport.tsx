@@ -137,19 +137,9 @@ const AttendanceExcelExport: React.FC = () => {
         // PF calculation (12% of basic + DA earned, max 1800) - keep rounding for PF only
         const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
         
-        // ESI calculation - capped at 21,000
-        let esiAmount = 0;
-        
-        // ESI base = Basic earned + DA earned + (OT for non-special branches)
-        let esiBaseAmount = basicEarned + daEarned;
-        
-        if (!isSpecialESIBranch) {
-          esiBaseAmount += extraHours; // Include OT for non-special branches
-        }
-        
-        // Cap the ESI calculation at 21,000
-        const cappedEsiBase = Math.min(esiBaseAmount, 21000);
-        esiAmount = cappedEsiBase > 0 ? Math.round(cappedEsiBase * 0.0075) : 0;
+        // ESI calculation - Basic + DA only (OT excluded)
+        const esiBaseAmount = basicEarned + daEarned;
+        const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
         
         // Get rent_deduction and advance from attendance record (monthly data)
         const rentDeduction = Math.round((record as any).rent_deduction || 0);
@@ -158,7 +148,7 @@ const AttendanceExcelExport: React.FC = () => {
         const shoeUniformAllowance = Math.round(record.employees?.shoe_uniform_allowance || 0);
         
         const totalDeduction = pfAmount + esiAmount + rentDeduction + advance + food - shoeUniformAllowance;
-        const takeHome = grossEarnings - totalDeduction;
+        const takeHome = grossEarnings - totalDeduction + extraHours;
 
         return {
           'Sl. No': index + 1,

@@ -150,13 +150,10 @@ const GenerateReportsDialog: React.FC<GenerateReportsDialogProps> = ({
       const otRate = employee.is_driver ? (branch?.driver_rate || 60) : (branch?.ot_rate || 60);
       const otAmount = Math.round(otHours * otRate);
       
-      // ESI calculation based on branch type - special branches (UP-TN, UP-BAG) exclude OT from ESI base
-      const specialBranches = ['UP-TN', 'UP-BAG'];
-      const esiBase = specialBranches.includes(branch?.name || '') ? 
-        (earnedBasic + earnedDA) : 
-        (earnedBasic + earnedDA + otAmount);
+      // ESI calculation - Basic + DA only (OT excluded)
+      const esiBase = earnedBasic + earnedDA;
       
-      // ESI calculation: 0 if gross > ₹21,000, otherwise 0.75%
+      // ESI calculation: 0 if base > ₹21,000, otherwise 0.75%
       const employeeESI = esiBase > 21000 ? 0 : Math.round(esiBase * 0.0075);
       const employerESI = esiBase > 21000 ? 0 : Math.round(esiBase * 0.0325);
 

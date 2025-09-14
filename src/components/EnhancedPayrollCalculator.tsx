@@ -101,8 +101,9 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
     const uncappedPf = Math.round(pfBasic * 0.12);
     const pf12Percent = Math.min(uncappedPf, 1800); // Cap PF at 1800
 
-    // Calculate ESI (0.75% of Gross Earnings, 0 if > ₹21,000)
-    const esi075Percent = grossEarnings > 21000 ? 0 : Math.round(grossEarnings * 0.0075);
+    // Calculate ESI (0.75% of Basic + DA only, excludes OT, 0 if > ₹21,000)
+    const esiBaseAmount = earnedBasic + earnedDA;
+    const esi075Percent = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
 
     // Calculate total deductions (PF + ESI + Rent + Advance + Food + Uniform - Shoe & Uniform Allowance)
     const totalDeductions = Math.round(
@@ -115,8 +116,8 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
       formData.shoe_uniform_allowance
     );
 
-    // Calculate Take Home: Gross Earnings - Total Deductions
-    const takeHome = Math.round(grossEarnings - totalDeductions);
+    // Calculate Take Home: Gross Earnings - Total Deductions + OT Amount
+    const takeHome = Math.round(grossEarnings - totalDeductions + extraHoursPay);
 
     setFormData(prev => ({
       ...prev,

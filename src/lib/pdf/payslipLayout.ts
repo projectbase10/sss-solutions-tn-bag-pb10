@@ -54,6 +54,7 @@ export interface PayslipData {
   };
   branch: {
     name: string;
+    ot_rate?: number;
   };
   stats: {
     present_days: number;
@@ -120,7 +121,7 @@ export const drawPayslipSection = (
       : (employee.basic_salary || 0) / 30; // Fallback to basic_salary/30 if no per day rate
 
   // Fetch branch OT rate (default 60 if not available)
-  const branchOTRate = 60;
+  const branchOTRate = data.branch.ot_rate || 60;
 
   const basicRate = perDaySalary * 0.60;
   const daRate = perDaySalary * 0.40;
@@ -255,8 +256,8 @@ export const drawPayslipSection = (
   const employeeInfo = [
     [`Emp No: ${employee.employee_id || ''}`, `Employee Name: ${employee.name || ''}`],
     [`Designation: ${employee.position || ''}`, `Date of Join: ${employee.join_date || ''}`],
-    [`Report Month: ${new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' })}`, `Working Days: ${workedDays}`],
-    [`PF: ${employee.pf_number || 'N/A'}`, `OT Hrs: ${stats.ot_hours.toFixed(1)} hrs`],
+    [`Report Month: ${new Date(month).toLocaleString('default', { month: 'long', year: 'numeric' })}`, `Working Days: ${perDaySalary.toFixed(0)}/${workedDays}`],
+    [`PF: ${employee.pf_number || 'N/A'}`, `OT Hrs: ${branchOTRate}/${stats.ot_hours.toFixed(1)} hrs`],
     [``, `ESI: ${employee.esi_number || 'N/A'}`]
   ];
   

@@ -759,7 +759,8 @@ const Attendance = () => {
             other_allowances: employee.other_allowances || 0
           },
           branch: {
-            name: branch?.name || 'N/A'
+            name: branch?.name || 'N/A',
+            ot_rate: branch?.ot_rate || 60
           },
           stats: {
             present_days: stats?.present_days || 0,

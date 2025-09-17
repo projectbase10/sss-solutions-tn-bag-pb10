@@ -276,8 +276,8 @@ const PayrollExcelExport = () => {
         // FIXED CALCULATION: Use the formula for ALL employees - precise decimals
         // basic salary earned = basic salary * worked days
         // da earned = da * worked days
-        const earnedBasic = basicSalary * Number(record.worked_days || 0);
-        const earnedDA = daSalary * Number(record.worked_days || 0);
+        const earnedBasic = basicSalary * 30;
+        const earnedDA = daSalary * 30;
           const extraHours = Math.round(Number((employeeStats as any)?.ot_hours || 0) * 60);
           
           const uncappedGrossEarnings = earnedBasic + earnedDA + extraHours;
@@ -289,9 +289,9 @@ const PayrollExcelExport = () => {
            // ESI calculation - Basic + DA only (OT excluded)
            const esiBaseAmount = earnedBasic + earnedDA;
            const esi = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
-          const rentDeduction = Math.round(Number(record.rent_deduction || 0));
-          const foodDeduction = Math.round(Number(record.food || 0));
-          const shoeUniformAllowance = Math.round(Number(record.shoe_uniform_allowance || 0));
+          const rentDeduction = 0; // Not in schema
+          const foodDeduction = Math.round(Number(record.other_deductions || 0));
+          const shoeUniformAllowance = Math.round(Number(record.allowances || 0));
           
            const totalDeduction = cappedPf + esi + rentDeduction + 0 + foodDeduction - shoeUniformAllowance;
            const takeHome = cappedGrossEarnings - totalDeduction + extraHours;
@@ -301,9 +301,9 @@ const PayrollExcelExport = () => {
             'Month': new Date(exportMonth + '-01').toLocaleString('default', { month: 'long', year: 'numeric' }),
             'EMP No': employee?.employee_id || '',
             'Name of the Employee': employee?.name || '',
-            'PF Number': employee?.pf_number || record.pf_number || '',
-            'ESI Number': employee?.esi_number || record.esi_number || '',
-            'Worked Days': Number(record.worked_days || 0),
+            'PF Number': employee?.pf_number || '',
+            'ESI Number': employee?.esi_number || '',
+            'Worked Days': 30,
             'OT Hrs': Number((employeeStats as any)?.ot_hours || 0).toFixed(1),
             'OT Amount': extraHours,
             'Per Day Salary': perDaySalary,

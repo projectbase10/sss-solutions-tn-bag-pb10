@@ -57,10 +57,15 @@ const ReportsMetrics = () => {
   const presentCount = attendance.filter(a => a.status === 'present').length;
   const avgAttendance = attendance.length > 0 ? Math.round((presentCount / attendance.length) * 100) : 0;
   
-  const totalPayroll = payroll.reduce((sum, p) => sum + (p.net_pay || 0), 0);
+  const totalPayroll = payroll.reduce((sum, p) => sum + (p.net_salary || 0), 0);
   
   const approvedLeaves = leaveRequests.filter(l => l.status === 'approved').length;
-  const totalLeaveDays = leaveRequests.reduce((sum, l) => sum + (l.days_count || 0), 0);
+  const totalLeaveDays = leaveRequests.reduce((sum, l) => {
+    const startDate = new Date(l.start_date);
+    const endDate = new Date(l.end_date);
+    const daysDiff = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 3600 * 24)) + 1;
+    return sum + daysDiff;
+  }, 0);
   const avgLeaveDays = employees.length > 0 ? Math.round(totalLeaveDays / employees.length) : 0;
   const leaveUtilization = Math.min(Math.round((avgLeaveDays / 21) * 100), 100); // Assuming 21 days annual leave
 

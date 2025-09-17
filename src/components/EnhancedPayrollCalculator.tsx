@@ -178,13 +178,21 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
 
     try {
       const payrollData = {
-        ...formData,
-        pay_period_start: `${formData.month}-01`,
-        pay_period_end: `${formData.month}-${new Date(formData.month + '-01').getDate()}`,
-        gross_pay: formData.gross_earnings,
-        hra: 0, // Not used in this format
+        employee_id: formData.employee_id,
+        month: parseInt(formData.month.split('-')[1]),
+        year: parseInt(formData.month.split('-')[0]),
+        basic_salary: formData.basic_salary,
+        da_amount: formData.da_amount,
+        gross_salary: formData.gross_earnings,
+        hra: 0,
         allowances: formData.shoe_uniform_allowance,
-        ot_amount: formData.extra_hours_pay,
+        overtime_amount: formData.extra_hours_pay,
+        pf_deduction: formData.pf_12_percent,
+        esi_deduction: formData.esi_0_75_percent,
+        advance_deduction: formData.advance,
+        other_deductions: formData.food,
+        total_deductions: formData.total_deduction,
+        net_salary: formData.take_home,
       };
 
       if (payrollRecord?.id) {

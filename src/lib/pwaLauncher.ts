@@ -11,7 +11,7 @@ export interface PWALaunchResult {
 /**
  * Attempts to launch the Other Branch PWA at https://sss.marzelet.com/
  * Falls back to opening in browser if PWA is not available
- * Uses conditional navigation: same-tab if current app is PWA, new tab otherwise
+ * Simplified approach that lets the browser/OS handle PWA launching
  */
 export async function launchUPBranchPWA(): Promise<PWALaunchResult> {
   const targetUrl = 'https://sss.marzelet.com/';
@@ -21,70 +21,31 @@ export async function launchUPBranchPWA(): Promise<PWALaunchResult> {
                (window.navigator as any).standalone ||
                document.referrer.includes('android-app://');
   
-  // If we're already in a PWA, navigate in same tab
-  if (isPWA) {
-    try {
+  try {
+    // If we're in a PWA, navigate in same tab to maintain PWA experience
+    if (isPWA) {
       window.location.href = targetUrl;
       return {
         success: true,
         method: 'pwa',
-        message: 'Navigated in same tab (PWA)'
-      };
-    } catch (error) {
-      console.error('Failed to navigate in same tab:', error);
-    }
-  }
-  
-  try {
-    // First attempt: Try to detect if the PWA is installed
-    if ('getInstalledRelatedApps' in navigator) {
-      try {
-        const relatedApps = await (navigator as any).getInstalledRelatedApps();
-        const targetApp = relatedApps.find((app: any) => 
-          app.url && app.url.includes('sss.marzelet.com')
-        );
-        
-        if (targetApp) {
-          // PWA is installed, try to open it
-          window.open(targetUrl, '_blank', 'noopener,noreferrer');
-          return {
-            success: true,
-            method: 'pwa',
-            message: 'Launched installed PWA'
-          };
-        }
-      } catch (error) {
-        console.log('getInstalledRelatedApps failed:', error);
-      }
-    }
-
-    // Second attempt: Try opening with window features that might trigger PWA
-    const pwaWindow = window.open(
-      targetUrl, 
-      '_blank', 
-      'toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,resizable=yes'
-    );
-    
-    if (pwaWindow) {
-      return {
-        success: true,
-        method: 'browser',
-        message: 'Opened in browser/PWA'
+        message: 'Navigated in same tab (PWA mode)'
       };
     }
 
-    // Fallback: Regular window.open
+    // For regular browser, open in new tab
+    // The browser will automatically launch the PWA if it's installed and configured
     window.open(targetUrl, '_blank', 'noopener,noreferrer');
+    
     return {
       success: true,
       method: 'browser',
-      message: 'Opened in browser'
+      message: 'Opened in new tab - browser will launch PWA if installed'
     };
     
   } catch (error) {
     console.error('Failed to launch UP Branch:', error);
     
-    // Last resort: try basic window.open
+    // Fallback: try basic window.open
     try {
       window.open(targetUrl, '_blank');
       return {

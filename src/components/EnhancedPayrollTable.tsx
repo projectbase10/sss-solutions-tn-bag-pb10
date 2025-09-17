@@ -74,12 +74,12 @@ const EnhancedPayrollTable = () => {
               {sortedPayrollRecords.map((record, index) => {
                 const attendanceData = attendanceStats[record.employee_id];
                 const attendanceOtHours = attendanceData?.ot_hours || 0;
-                const totalOtHours = attendanceOtHours + (record.ot_hours || 0);
+                const totalOtHours = attendanceOtHours;
                 
                 // Use the new formula: Earned Basic = Basic Salary × Present Days - precise decimals
                 const basicSalary = record.basic_salary || 0;
                 const daAmount = record.da_amount || 0;
-                const workedDays = record.worked_days || 0;
+                const workedDays = attendanceData?.present_days || 30;
                 const earnedBasic = basicSalary * workedDays;
                 const earnedDA = daAmount * workedDays;
                 
@@ -95,10 +95,10 @@ const EnhancedPayrollTable = () => {
                 // ESI calculation - Basic + DA only (OT excluded)
                 const esiBaseAmount = earnedBasic + earnedDA;
                 const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
-                const rentDeduction = Math.round(record.rent_deduction || 0);
-                const advance = 0; // Will be added later from employee data
-                const foodDeduction = Math.round(record.food || 0);
-                const shoeUniformAllowance = Math.round(record.shoe_uniform_allowance || 0);
+                const rentDeduction = 0; // Not in database schema
+                const advance = Math.round(record.advance_deduction || 0);
+                const foodDeduction = Math.round(record.other_deductions || 0);
+                const shoeUniformAllowance = Math.round(record.allowances || 0);
                 
                 // Calculate total deduction
                 const totalDeduction = Math.round(pfAmount + esiAmount + rentDeduction + advance + foodDeduction - shoeUniformAllowance);
@@ -113,8 +113,8 @@ const EnhancedPayrollTable = () => {
                     <TableCell>
                       <div className="font-medium">{record.employees?.name}</div>
                     </TableCell>
-                    <TableCell>{record.pf_number || record.employees?.pf_number || '-'}</TableCell>
-                    <TableCell>{record.esi_number || record.employees?.esi_number || '-'}</TableCell>
+                    <TableCell>{record.employees?.pf_number || '-'}</TableCell>
+                    <TableCell>{record.employees?.esi_number || '-'}</TableCell>
                     <TableCell>{workedDays}</TableCell>
                     <TableCell>{totalOtHours.toFixed(1)}</TableCell>
                     <TableCell>₹{basicSalary.toFixed(4)}</TableCell>
@@ -133,8 +133,8 @@ const EnhancedPayrollTable = () => {
                     <TableCell>₹{totalDeduction}</TableCell>
                     <TableCell>₹{takeHome}</TableCell>
                     <TableCell>
-                      <Badge variant={record.status === 'paid' ? 'default' : record.status === 'processed' ? 'secondary' : 'outline'}>
-                        {record.status}
+                      <Badge variant="outline">
+                        Processed
                       </Badge>
                     </TableCell>
                   </TableRow>

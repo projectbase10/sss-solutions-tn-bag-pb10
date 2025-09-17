@@ -139,7 +139,20 @@ const TwoFactorAuth = () => {
         throw error;
       }
 
-      setSettings(data);
+        setSettings({
+          two_factor_enabled: data.two_factor_enabled || false,
+          two_factor_verified: data.two_factor_verified || false,
+          two_factor_secret: data.two_factor_secret || '',
+          two_factor_backup_codes: Array.isArray(data.two_factor_backup_codes) 
+            ? data.two_factor_backup_codes.map(String)
+            : [],
+          totp_confirmed: data.two_factor_verified || false,
+          totp_secret: data.totp_secret || '',
+          created_at: data.created_at,
+          updated_at: data.updated_at,
+          id: data.id,
+          user_id: data.user_id
+        });
     } catch (error) {
       console.error('Error fetching settings:', error);
       toast({

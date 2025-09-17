@@ -125,7 +125,10 @@ export const useCreateAttendance = () => {
       
       const { data, error } = await supabase
         .from('attendance')
-        .insert([attendance])
+        .insert({
+          ...attendance,
+          branch_id: attendance.branch_id || 'default-branch'
+        })
         .select();
       
       if (error) throw error;

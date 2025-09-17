@@ -168,9 +168,9 @@ const AttendanceReport = () => {
       const basicSalary = perDaySalary * 0.60;
       const daSalary = perDaySalary * 0.40;
       
-      // Use present_days from attendance record
-      const workedDays = record.present_days || 0;
-      const otHours = record.ot_hours || 0;
+      // Calculate worked days based on attendance status - default to 1 if present
+      const workedDays = record.status === 'present' ? 1 : 0;
+      const otHours = record.overtime_hours || 0;
       
       // Calculate earnings
       const basicEarned = basicSalary * workedDays;

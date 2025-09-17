@@ -213,16 +213,8 @@ const PayrollExcelExport = () => {
       
       return false;
     });
-        
-        // If no date fields available, check if this is September 2025 and include all records (fallback)
-        if (exportMonth === '2025-09') {
-          return true;
-        }
-        
-        return false;
-      });
 
-      console.log('Filtered payroll records:', filteredPayrollRecords.length);
+    console.log('Filtered payroll records:', filteredPayrollRecords.length);
 
       if (branchId) {
         filteredPayrollRecords = filteredPayrollRecords.filter(record => 

@@ -70,8 +70,8 @@ const OTPaymentDialog = ({ employee }: OTPaymentDialogProps) => {
         .from('payroll')
         .select('*')
         .eq('employee_id', employee.id)
-        .eq('pay_period_start', payPeriodStart)
-        .eq('pay_period_end', payPeriodEnd)
+        .eq('month', parseInt(selectedMonth))
+        .eq('year', parseInt(selectedYear))
         .maybeSingle();
 
       const otAmountNum = parseFloat(otAmount);
@@ -82,32 +82,26 @@ const OTPaymentDialog = ({ employee }: OTPaymentDialogProps) => {
         .from('attendance')
         .insert([{
           employee_id: employee.id,
+          branch_id: employee.branch_id || '',
           date: new Date().toISOString().split('T')[0],
-           month: monthString,
           status: 'present',
-          notes: JSON.stringify({
-            present_days: 0,
-            absent_days: 0,
-            late_days: 0,
-            ot_hours: otHoursNum,
-            custom_notes: `OT payment of ₹${otAmountNum} for ${otHoursNum} hours added via employee card`
-          })
+          overtime_hours: otHoursNum,
+          notes: `OT payment of ₹${otAmountNum} for ${otHoursNum} hours added via employee card`
         }]);
 
       if (existingPayroll) {
         // Update existing payroll record with OT
-        const currentOtAmount = existingPayroll.ot_amount || 0;
+        const currentOtAmount = existingPayroll.overtime_amount || 0;
         const newOtAmount = currentOtAmount + otAmountNum;
-        const newGrossPay = existingPayroll.gross_pay + otAmountNum;
-        const newNetPay = existingPayroll.net_pay + otAmountNum;
+        const newGrossPay = existingPayroll.gross_salary + otAmountNum;
+        const newNetPay = existingPayroll.net_salary + otAmountNum;
 
         await updatePayroll.mutateAsync({
           id: existingPayroll.id,
           updates: {
-            ot_amount: newOtAmount,
-            gross_pay: newGrossPay,
-            net_pay: newNetPay,
-            updated_at: new Date().toISOString(),
+            overtime_amount: newOtAmount,
+            gross_salary: newGrossPay,
+            net_salary: newNetPay,
           },
         });
       } else {
@@ -121,17 +115,15 @@ const OTPaymentDialog = ({ employee }: OTPaymentDialogProps) => {
           .from('payroll')
           .insert([{
             employee_id: employee.id,
-            pay_period_start: payPeriodStart,
-            pay_period_end: payPeriodEnd,
-            month: monthString,
+            month: parseInt(selectedMonth),
+            year: parseInt(selectedYear),
             basic_salary: employee.basic_salary,
             hra: 0,
             allowances: 0,
-            ot_amount: otAmountNum,
-            deductions: deductions,
-            gross_pay: grossPay,
-            net_pay: netPay,
-            status: 'draft',
+            overtime_amount: otAmountNum,
+            total_deductions: deductions,
+            gross_salary: grossPay,
+            net_salary: netPay,
           }]);
       }
 

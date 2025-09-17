@@ -65,7 +65,7 @@ const EnhancedGenerateReportsDialog: React.FC<EnhancedGenerateReportsDialogProps
     }
 
     let filteredData = payrollData.filter(record => {
-      const monthMatch = record.month === selectedMonth;
+      const monthMatch = record.month === parseInt(selectedMonth);
       const branchMatch = selectedBranch === 'all' || record.employees?.branch_id === selectedBranch;
       return monthMatch && branchMatch;
     });

@@ -6,41 +6,25 @@ import { useToast } from '@/hooks/use-toast';
 export interface PayrollRecord {
   id: string;
   employee_id: string;
-  pay_period_start: string;
-  pay_period_end: string;
-  month?: string;
+  month: number;
+  year: number;
   basic_salary: number;
   da_amount?: number | null;
-  basic_plus_da?: number | null;
-  day_salary?: number | null;
   hra: number;
   allowances: number;
-  ot_hours?: number | null;
-  ot_rate?: number | null;
-  ot_amount?: number;
-  extra_hours_pay?: number | null;
-  deductions: number;
-  gross_pay: number;
-  net_pay: number;
-  status: 'draft' | 'processed' | 'paid';
-  processed_at?: string;
-  pf_number?: string | null;
-  esi_number?: string | null;
-  worked_days?: number | null;
-  man_days_details?: any;
-  salary_components?: any;
-  gross_earnings?: number | null;
-  pf_12_percent?: number | null;
-  esi_0_75_percent?: number | null;
-  food?: number | null;
-  uniform?: number | null;
-  lunch?: number | null;
-  rent_deduction?: number | null;
-  advance?: number | null;
-  shoe_uniform_allowance?: number | null;
-  take_home?: number | null;
+  overtime_amount?: number | null;
+  advance_deduction?: number | null;
+  esi_deduction?: number | null;
+  pf_deduction?: number | null;
+  esi_employee_deduction?: number | null;
+  esi_employer_contribution?: number | null;
+  other_deductions?: number | null;
+  total_deductions?: number | null;
+  gross_salary?: number | null;
+  net_salary?: number | null;
   created_at: string;
   updated_at: string;
+  user_id?: string | null;
   employees?: {
     name: string;
     employee_id: string;
@@ -76,7 +60,7 @@ export const usePayrollStats = () => {
       console.log('Fetching payroll stats...');
       const { data, error } = await supabase
         .from('payroll')
-        .select('net_pay, status');
+        .select('net_salary');
       
       if (error) {
         console.error('Error fetching payroll stats:', error);
@@ -84,9 +68,9 @@ export const usePayrollStats = () => {
       }
 
       const stats = {
-        totalPayroll: data.reduce((sum, record) => sum + (record.net_pay || 0), 0),
-        processedCount: data.filter(record => record.status === 'processed' || record.status === 'paid').length,
-        pendingCount: data.filter(record => record.status === 'draft').length,
+        totalPayroll: data.reduce((sum, record) => sum + (record.net_salary || 0), 0),
+        processedCount: 0, // Payroll table doesn't have status field
+        pendingCount: 0, // Payroll table doesn't have status field
         totalEmployees: data.length,
       };
 

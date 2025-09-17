@@ -84,23 +84,13 @@ const PayrollExcelExport = () => {
 
   const exportToPDF = async (exportMonth: string, branchId?: string) => {
     let filteredPayrollRecords = payrollRecords.filter(record => {
-      // First check if month field exists and matches
-      if (record.month && record.month.trim() !== '') {
-        return record.month === exportMonth;
-      }
+      // Check if month field matches
+      const recordMonth = record.month?.toString().padStart(2, '0');
+      const recordYear = record.year?.toString();
+      const fullMonth = `${recordYear}-${recordMonth}`;
       
-      // If no month field, check pay_period_end date
-      if (record.pay_period_end) {
-        const payPeriodEndDate = new Date(record.pay_period_end);
-        const recordMonthFromDate = payPeriodEndDate.toISOString().slice(0, 7);
-        return recordMonthFromDate === exportMonth;
-      }
-      
-      // If no month field and no pay_period_end, check pay_period_start
-      if (record.pay_period_start) {
-        const payPeriodStartDate = new Date(record.pay_period_start);
-        const recordMonthFromDate = payPeriodStartDate.toISOString().slice(0, 7);
-        return recordMonthFromDate === exportMonth;
+      if (fullMonth === exportMonth) {
+        return true;
       }
       
       // If no date fields available, check if this is September 2025 and include all records (fallback)
@@ -206,25 +196,23 @@ const PayrollExcelExport = () => {
       console.log('Payroll records available:', payrollRecords.length);
       console.log('Attendance stats:', attendanceStats);
       
-      let filteredPayrollRecords = payrollRecords.filter(record => {
-        // First check if month field exists and matches
-        if (record.month && record.month.trim() !== '') {
-          return record.month === exportMonth;
-        }
-        
-        // If no month field, check pay_period_end date
-        if (record.pay_period_end) {
-          const payPeriodEndDate = new Date(record.pay_period_end);
-          const recordMonthFromDate = payPeriodEndDate.toISOString().slice(0, 7);
-          return recordMonthFromDate === exportMonth;
-        }
-        
-        // If no month field and no pay_period_end, check pay_period_start
-        if (record.pay_period_start) {
-          const payPeriodStartDate = new Date(record.pay_period_start);
-          const recordMonthFromDate = payPeriodStartDate.toISOString().slice(0, 7);
-          return recordMonthFromDate === exportMonth;
-        }
+    let filteredPayrollRecords = payrollRecords.filter(record => {
+      // Check if month field matches
+      const recordMonth = record.month?.toString().padStart(2, '0');
+      const recordYear = record.year?.toString();
+      const fullMonth = `${recordYear}-${recordMonth}`;
+      
+      if (fullMonth === exportMonth) {
+        return true;
+      }
+      
+      // If no date fields available, check if this is September 2025 and include all records (fallback)
+      if (exportMonth === '2025-09') {
+        return true;
+      }
+      
+      return false;
+    });
         
         // If no date fields available, check if this is September 2025 and include all records (fallback)
         if (exportMonth === '2025-09') {

@@ -46,7 +46,10 @@ const BackupCodeVerification: React.FC<BackupCodeVerificationProps> = ({ onVerif
         throw new Error('No backup codes found');
       }
 
-      const codeIndex = settings.two_factor_backup_codes.indexOf(backupCode.toUpperCase());
+      const backupCodes = Array.isArray(settings.two_factor_backup_codes) 
+        ? settings.two_factor_backup_codes 
+        : [];
+      const codeIndex = backupCodes.indexOf(backupCode.toUpperCase());
       
       if (codeIndex === -1) {
         toast({
@@ -59,7 +62,7 @@ const BackupCodeVerification: React.FC<BackupCodeVerificationProps> = ({ onVerif
       }
 
       // Remove used backup code
-      const updatedCodes = settings.two_factor_backup_codes.filter((_, index) => index !== codeIndex);
+      const updatedCodes = backupCodes.filter((_, index) => index !== codeIndex);
 
       await supabase
         .from('security_settings')

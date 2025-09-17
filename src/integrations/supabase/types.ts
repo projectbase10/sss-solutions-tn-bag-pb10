@@ -10,73 +10,55 @@ export type Database = {
   // Allows to automatically instantiate createClient with right options
   // instead of createClient<Database, { PostgrestVersion: 'XX' }>(URL, KEY)
   __InternalSupabase: {
-    PostgrestVersion: "12.2.3 (519615d)"
+    PostgrestVersion: "13.0.4"
   }
   public: {
     Tables: {
       attendance: {
         Row: {
-          absent_days: number | null
-          advance: number | null
-          branch_id: string | null
+          branch_id: string
           check_in_time: string | null
           check_out_time: string | null
           created_at: string
           date: string
-          deduction: number | null
           employee_id: string
-          food: number | null
+          hours_worked: number | null
           id: string
-          late_days: number | null
-          month: string | null
           notes: string | null
-          ot_hours: number | null
-          present_days: number | null
-          rent_deduction: number | null
-          status: string
-          uniform: number | null
+          overtime_hours: number | null
+          status: string | null
+          updated_at: string
+          user_id: string | null
         }
         Insert: {
-          absent_days?: number | null
-          advance?: number | null
-          branch_id?: string | null
+          branch_id: string
           check_in_time?: string | null
           check_out_time?: string | null
           created_at?: string
           date: string
-          deduction?: number | null
           employee_id: string
-          food?: number | null
+          hours_worked?: number | null
           id?: string
-          late_days?: number | null
-          month?: string | null
           notes?: string | null
-          ot_hours?: number | null
-          present_days?: number | null
-          rent_deduction?: number | null
-          status: string
-          uniform?: number | null
+          overtime_hours?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Update: {
-          absent_days?: number | null
-          advance?: number | null
-          branch_id?: string | null
+          branch_id?: string
           check_in_time?: string | null
           check_out_time?: string | null
           created_at?: string
           date?: string
-          deduction?: number | null
           employee_id?: string
-          food?: number | null
+          hours_worked?: number | null
           id?: string
-          late_days?: number | null
-          month?: string | null
           notes?: string | null
-          ot_hours?: number | null
-          present_days?: number | null
-          rent_deduction?: number | null
-          status?: string
-          uniform?: number | null
+          overtime_hours?: number | null
+          status?: string | null
+          updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -97,56 +79,50 @@ export type Database = {
       }
       branches: {
         Row: {
-          address: string
+          address: string | null
           created_at: string
           departments: Json | null
           driver_enabled: boolean | null
           driver_rate: number | null
-          email: string
-          employee_count: number | null
-          esi_components: Json | null
+          email: string | null
           id: string
-          manager: string
+          manager: string | null
           name: string
-          ot_rate: number
-          phone: string
-          status: string
+          ot_rate: number | null
+          phone: string | null
+          status: string | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
-          address: string
+          address?: string | null
           created_at?: string
           departments?: Json | null
           driver_enabled?: boolean | null
           driver_rate?: number | null
-          email: string
-          employee_count?: number | null
-          esi_components?: Json | null
+          email?: string | null
           id?: string
-          manager: string
+          manager?: string | null
           name: string
-          ot_rate?: number
-          phone: string
-          status?: string
+          ot_rate?: number | null
+          phone?: string | null
+          status?: string | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
-          address?: string
+          address?: string | null
           created_at?: string
           departments?: Json | null
           driver_enabled?: boolean | null
           driver_rate?: number | null
-          email?: string
-          employee_count?: number | null
-          esi_components?: Json | null
+          email?: string | null
           id?: string
-          manager?: string
+          manager?: string | null
           name?: string
-          ot_rate?: number
-          phone?: string
-          status?: string
+          ot_rate?: number | null
+          phone?: string | null
+          status?: string | null
           updated_at?: string
           user_id?: string | null
         }
@@ -154,31 +130,31 @@ export type Database = {
       }
       employee_documents: {
         Row: {
-          created_at: string | null
           document_name: string
-          document_type: string | null
+          document_type: string
           employee_id: string
           file_url: string
           id: string
-          uploaded_at: string | null
+          uploaded_at: string
+          user_id: string | null
         }
         Insert: {
-          created_at?: string | null
           document_name: string
-          document_type?: string | null
+          document_type: string
           employee_id: string
           file_url: string
           id?: string
-          uploaded_at?: string | null
+          uploaded_at?: string
+          user_id?: string | null
         }
         Update: {
-          created_at?: string | null
           document_name?: string
-          document_type?: string | null
+          document_type?: string
           employee_id?: string
           file_url?: string
           id?: string
-          uploaded_at?: string | null
+          uploaded_at?: string
+          user_id?: string | null
         }
         Relationships: [
           {
@@ -195,10 +171,10 @@ export type Database = {
           aadhar_card: string | null
           account_number: string | null
           advance: number | null
-          allowances: number
+          allowances: number | null
           avatar_url: string | null
           bank_name: string | null
-          basic_salary: number
+          basic_salary: number | null
           basic_salary_percentage: number | null
           branch_id: string | null
           branch_name: string | null
@@ -210,16 +186,15 @@ export type Database = {
           da_rate: number | null
           date_of_birth: string | null
           day_rate: number | null
-          days: number | null
-          department: string
+          department: string | null
           document_url: string | null
-          email: string
+          email: string | null
           employee_id: string
           esi_eligible: boolean | null
           esi_number: string | null
           fathers_name: string | null
           gross_salary: number | null
-          hra: number
+          hra: number | null
           id: string
           ifsc_code: string | null
           is_driver: boolean | null
@@ -243,7 +218,7 @@ export type Database = {
           row_number: number | null
           shift_code: string | null
           shoe_uniform_allowance: number | null
-          status: string
+          status: string | null
           tea_allowance: number | null
           transfer_mode: string | null
           updated_at: string
@@ -253,10 +228,10 @@ export type Database = {
           aadhar_card?: string | null
           account_number?: string | null
           advance?: number | null
-          allowances?: number
+          allowances?: number | null
           avatar_url?: string | null
           bank_name?: string | null
-          basic_salary?: number
+          basic_salary?: number | null
           basic_salary_percentage?: number | null
           branch_id?: string | null
           branch_name?: string | null
@@ -268,20 +243,19 @@ export type Database = {
           da_rate?: number | null
           date_of_birth?: string | null
           day_rate?: number | null
-          days?: number | null
-          department: string
+          department?: string | null
           document_url?: string | null
-          email: string
+          email?: string | null
           employee_id: string
           esi_eligible?: boolean | null
           esi_number?: string | null
           fathers_name?: string | null
           gross_salary?: number | null
-          hra?: number
+          hra?: number | null
           id?: string
           ifsc_code?: string | null
           is_driver?: boolean | null
-          join_date?: string
+          join_date: string
           late_deduction_eligible?: boolean | null
           location?: string | null
           mode_of_payment?: string | null
@@ -301,7 +275,7 @@ export type Database = {
           row_number?: number | null
           shift_code?: string | null
           shoe_uniform_allowance?: number | null
-          status?: string
+          status?: string | null
           tea_allowance?: number | null
           transfer_mode?: string | null
           updated_at?: string
@@ -311,10 +285,10 @@ export type Database = {
           aadhar_card?: string | null
           account_number?: string | null
           advance?: number | null
-          allowances?: number
+          allowances?: number | null
           avatar_url?: string | null
           bank_name?: string | null
-          basic_salary?: number
+          basic_salary?: number | null
           basic_salary_percentage?: number | null
           branch_id?: string | null
           branch_name?: string | null
@@ -326,16 +300,15 @@ export type Database = {
           da_rate?: number | null
           date_of_birth?: string | null
           day_rate?: number | null
-          days?: number | null
-          department?: string
+          department?: string | null
           document_url?: string | null
-          email?: string
+          email?: string | null
           employee_id?: string
           esi_eligible?: boolean | null
           esi_number?: string | null
           fathers_name?: string | null
           gross_salary?: number | null
-          hra?: number
+          hra?: number | null
           id?: string
           ifsc_code?: string | null
           is_driver?: boolean | null
@@ -359,7 +332,7 @@ export type Database = {
           row_number?: number | null
           shift_code?: string | null
           shoe_uniform_allowance?: number | null
-          status?: string
+          status?: string | null
           tea_allowance?: number | null
           transfer_mode?: string | null
           updated_at?: string
@@ -375,313 +348,50 @@ export type Database = {
           },
         ]
       }
-      general_settings: {
-        Row: {
-          company_address: string | null
-          company_email: string | null
-          company_name: string | null
-          created_at: string
-          currency: string | null
-          date_format: string | null
-          id: string
-          language: string | null
-          pdf_format: string | null
-          phone: string | null
-          sidebar_mode: string | null
-          theme: string | null
-          time_format: string | null
-          timezone: string | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          company_address?: string | null
-          company_email?: string | null
-          company_name?: string | null
-          created_at?: string
-          currency?: string | null
-          date_format?: string | null
-          id?: string
-          language?: string | null
-          pdf_format?: string | null
-          phone?: string | null
-          sidebar_mode?: string | null
-          theme?: string | null
-          time_format?: string | null
-          timezone?: string | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          company_address?: string | null
-          company_email?: string | null
-          company_name?: string | null
-          created_at?: string
-          currency?: string | null
-          date_format?: string | null
-          id?: string
-          language?: string | null
-          pdf_format?: string | null
-          phone?: string | null
-          sidebar_mode?: string | null
-          theme?: string | null
-          time_format?: string | null
-          timezone?: string | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      goals: {
-        Row: {
-          created_at: string
-          description: string | null
-          employee_id: string
-          id: string
-          progress: number
-          status: string
-          target_date: string
-          title: string
-          updated_at: string
-        }
-        Insert: {
-          created_at?: string
-          description?: string | null
-          employee_id: string
-          id?: string
-          progress?: number
-          status?: string
-          target_date: string
-          title: string
-          updated_at?: string
-        }
-        Update: {
-          created_at?: string
-          description?: string | null
-          employee_id?: string
-          id?: string
-          progress?: number
-          status?: string
-          target_date?: string
-          title?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "goals_employee_id_fkey"
-            columns: ["employee_id"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      interviews: {
-        Row: {
-          application_id: string
-          created_at: string
-          id: string
-          interview_date: string
-          interview_time: string
-          interview_type: string
-          interviewer_id: string
-          notes: string | null
-          score: number | null
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          application_id: string
-          created_at?: string
-          id?: string
-          interview_date: string
-          interview_time: string
-          interview_type: string
-          interviewer_id: string
-          notes?: string | null
-          score?: number | null
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          application_id?: string
-          created_at?: string
-          id?: string
-          interview_date?: string
-          interview_time?: string
-          interview_type?: string
-          interviewer_id?: string
-          notes?: string | null
-          score?: number | null
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "interviews_application_id_fkey"
-            columns: ["application_id"]
-            isOneToOne: false
-            referencedRelation: "job_applications"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "interviews_interviewer_id_fkey"
-            columns: ["interviewer_id"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      job_applications: {
-        Row: {
-          applied_at: string
-          candidate_email: string
-          candidate_name: string
-          candidate_phone: string | null
-          cover_letter: string | null
-          experience_years: number
-          id: string
-          job_posting_id: string
-          resume_url: string | null
-          status: string
-          updated_at: string
-        }
-        Insert: {
-          applied_at?: string
-          candidate_email: string
-          candidate_name: string
-          candidate_phone?: string | null
-          cover_letter?: string | null
-          experience_years?: number
-          id?: string
-          job_posting_id: string
-          resume_url?: string | null
-          status?: string
-          updated_at?: string
-        }
-        Update: {
-          applied_at?: string
-          candidate_email?: string
-          candidate_name?: string
-          candidate_phone?: string | null
-          cover_letter?: string | null
-          experience_years?: number
-          id?: string
-          job_posting_id?: string
-          resume_url?: string | null
-          status?: string
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "job_applications_job_posting_id_fkey"
-            columns: ["job_posting_id"]
-            isOneToOne: false
-            referencedRelation: "job_postings"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      job_postings: {
-        Row: {
-          application_deadline: string | null
-          created_at: string
-          department: string
-          description: string | null
-          id: string
-          job_type: string
-          location: string
-          posted_date: string
-          requirements: string | null
-          status: string
-          title: string
-          updated_at: string
-          user_id: string | null
-        }
-        Insert: {
-          application_deadline?: string | null
-          created_at?: string
-          department: string
-          description?: string | null
-          id?: string
-          job_type: string
-          location: string
-          posted_date?: string
-          requirements?: string | null
-          status?: string
-          title: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Update: {
-          application_deadline?: string | null
-          created_at?: string
-          department?: string
-          description?: string | null
-          id?: string
-          job_type?: string
-          location?: string
-          posted_date?: string
-          requirements?: string | null
-          status?: string
-          title?: string
-          updated_at?: string
-          user_id?: string | null
-        }
-        Relationships: []
-      }
       leave_requests: {
         Row: {
           approved_at: string | null
           approved_by: string | null
           created_at: string
-          days_count: number
           employee_id: string
           end_date: string
           id: string
           leave_type: string
           reason: string | null
           start_date: string
-          status: string
+          status: string | null
           updated_at: string
+          user_id: string | null
         }
         Insert: {
           approved_at?: string | null
           approved_by?: string | null
           created_at?: string
-          days_count: number
           employee_id: string
           end_date: string
           id?: string
           leave_type: string
           reason?: string | null
           start_date: string
-          status?: string
+          status?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Update: {
           approved_at?: string | null
           approved_by?: string | null
           created_at?: string
-          days_count?: number
           employee_id?: string
           end_date?: string
           id?: string
           leave_type?: string
           reason?: string | null
           start_date?: string
-          status?: string
+          status?: string | null
           updated_at?: string
+          user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "leave_requests_approved_by_fkey"
-            columns: ["approved_by"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
           {
             foreignKeyName: "leave_requests_employee_id_fkey"
             columns: ["employee_id"]
@@ -691,150 +401,75 @@ export type Database = {
           },
         ]
       }
-      notification_settings: {
-        Row: {
-          created_at: string
-          email_notifications: boolean | null
-          id: string
-          push_notifications: boolean | null
-          sms_notifications: boolean | null
-          updated_at: string
-          user_id: string
-        }
-        Insert: {
-          created_at?: string
-          email_notifications?: boolean | null
-          id?: string
-          push_notifications?: boolean | null
-          sms_notifications?: boolean | null
-          updated_at?: string
-          user_id: string
-        }
-        Update: {
-          created_at?: string
-          email_notifications?: boolean | null
-          id?: string
-          push_notifications?: boolean | null
-          sms_notifications?: boolean | null
-          updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
       payroll: {
         Row: {
-          allowances: number
-          basic_plus_da: number | null
-          basic_salary: number
+          advance_deduction: number | null
+          allowances: number | null
+          basic_salary: number | null
           created_at: string
           da_amount: number | null
-          day_salary: number | null
-          deductions: number
           employee_id: string
-          esi_0_75_percent: number | null
-          esi_number: string | null
-          extra_hours_pay: number | null
-          food: number | null
-          gross_earnings: number | null
-          gross_pay: number
-          hra: number
+          esi_deduction: number | null
+          esi_employee_deduction: number | null
+          esi_employer_contribution: number | null
+          gross_salary: number | null
+          hra: number | null
           id: string
-          lunch: number | null
-          man_days_details: Json | null
-          month: string | null
-          net_pay: number
-          ot_amount: number | null
-          ot_hours: number | null
-          ot_rate: number | null
-          pay_period_end: string
-          pay_period_start: string
-          pf_12_percent: number | null
-          pf_number: string | null
-          processed_at: string | null
-          rent_deduction: number | null
-          salary_components: Json | null
-          shoe_uniform_allowance: number | null
-          status: string
-          take_home: number | null
-          uniform: number | null
+          month: number
+          net_salary: number | null
+          other_deductions: number | null
+          overtime_amount: number | null
+          pf_deduction: number | null
+          total_deductions: number | null
           updated_at: string
-          worked_days: number | null
+          user_id: string | null
+          year: number
         }
         Insert: {
-          allowances?: number
-          basic_plus_da?: number | null
-          basic_salary?: number
+          advance_deduction?: number | null
+          allowances?: number | null
+          basic_salary?: number | null
           created_at?: string
           da_amount?: number | null
-          day_salary?: number | null
-          deductions?: number
           employee_id: string
-          esi_0_75_percent?: number | null
-          esi_number?: string | null
-          extra_hours_pay?: number | null
-          food?: number | null
-          gross_earnings?: number | null
-          gross_pay?: number
-          hra?: number
+          esi_deduction?: number | null
+          esi_employee_deduction?: number | null
+          esi_employer_contribution?: number | null
+          gross_salary?: number | null
+          hra?: number | null
           id?: string
-          lunch?: number | null
-          man_days_details?: Json | null
-          month?: string | null
-          net_pay?: number
-          ot_amount?: number | null
-          ot_hours?: number | null
-          ot_rate?: number | null
-          pay_period_end: string
-          pay_period_start: string
-          pf_12_percent?: number | null
-          pf_number?: string | null
-          processed_at?: string | null
-          rent_deduction?: number | null
-          salary_components?: Json | null
-          shoe_uniform_allowance?: number | null
-          status?: string
-          take_home?: number | null
-          uniform?: number | null
+          month: number
+          net_salary?: number | null
+          other_deductions?: number | null
+          overtime_amount?: number | null
+          pf_deduction?: number | null
+          total_deductions?: number | null
           updated_at?: string
-          worked_days?: number | null
+          user_id?: string | null
+          year: number
         }
         Update: {
-          allowances?: number
-          basic_plus_da?: number | null
-          basic_salary?: number
+          advance_deduction?: number | null
+          allowances?: number | null
+          basic_salary?: number | null
           created_at?: string
           da_amount?: number | null
-          day_salary?: number | null
-          deductions?: number
           employee_id?: string
-          esi_0_75_percent?: number | null
-          esi_number?: string | null
-          extra_hours_pay?: number | null
-          food?: number | null
-          gross_earnings?: number | null
-          gross_pay?: number
-          hra?: number
+          esi_deduction?: number | null
+          esi_employee_deduction?: number | null
+          esi_employer_contribution?: number | null
+          gross_salary?: number | null
+          hra?: number | null
           id?: string
-          lunch?: number | null
-          man_days_details?: Json | null
-          month?: string | null
-          net_pay?: number
-          ot_amount?: number | null
-          ot_hours?: number | null
-          ot_rate?: number | null
-          pay_period_end?: string
-          pay_period_start?: string
-          pf_12_percent?: number | null
-          pf_number?: string | null
-          processed_at?: string | null
-          rent_deduction?: number | null
-          salary_components?: Json | null
-          shoe_uniform_allowance?: number | null
-          status?: string
-          take_home?: number | null
-          uniform?: number | null
+          month?: number
+          net_salary?: number | null
+          other_deductions?: number | null
+          overtime_amount?: number | null
+          pf_deduction?: number | null
+          total_deductions?: number | null
           updated_at?: string
-          worked_days?: number | null
+          user_id?: string | null
+          year?: number
         }
         Relationships: [
           {
@@ -849,132 +484,45 @@ export type Database = {
       payroll_settings: {
         Row: {
           created_at: string
-          esi_rate: number
+          esi_employee_rate: number | null
+          esi_employer_rate: number | null
+          esi_rate: number | null
           id: string
-          income_tax_rate: number
-          monthly_pay_date: number
-          overtime_rate: number
-          pay_frequency: string
-          pf_rate: number
+          income_tax_rate: number | null
+          monthly_pay_date: number | null
+          overtime_rate: number | null
+          pay_frequency: string | null
+          pf_rate: number | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
           created_at?: string
-          esi_rate?: number
+          esi_employee_rate?: number | null
+          esi_employer_rate?: number | null
+          esi_rate?: number | null
           id?: string
-          income_tax_rate?: number
-          monthly_pay_date?: number
-          overtime_rate?: number
-          pay_frequency?: string
-          pf_rate?: number
+          income_tax_rate?: number | null
+          monthly_pay_date?: number | null
+          overtime_rate?: number | null
+          pay_frequency?: string | null
+          pf_rate?: number | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
           created_at?: string
-          esi_rate?: number
+          esi_employee_rate?: number | null
+          esi_employer_rate?: number | null
+          esi_rate?: number | null
           id?: string
-          income_tax_rate?: number
-          monthly_pay_date?: number
-          overtime_rate?: number
-          pay_frequency?: string
-          pf_rate?: number
+          income_tax_rate?: number | null
+          monthly_pay_date?: number | null
+          overtime_rate?: number | null
+          pay_frequency?: string | null
+          pf_rate?: number | null
           updated_at?: string
           user_id?: string | null
-        }
-        Relationships: []
-      }
-      performance_reviews: {
-        Row: {
-          areas_for_improvement: string | null
-          created_at: string
-          employee_id: string
-          goals_progress: Json | null
-          id: string
-          month: string | null
-          overall_score: number
-          review_date: string
-          review_period: string
-          reviewer_id: string
-          status: string
-          strengths: string | null
-          updated_at: string
-        }
-        Insert: {
-          areas_for_improvement?: string | null
-          created_at?: string
-          employee_id: string
-          goals_progress?: Json | null
-          id?: string
-          month?: string | null
-          overall_score: number
-          review_date?: string
-          review_period: string
-          reviewer_id: string
-          status?: string
-          strengths?: string | null
-          updated_at?: string
-        }
-        Update: {
-          areas_for_improvement?: string | null
-          created_at?: string
-          employee_id?: string
-          goals_progress?: Json | null
-          id?: string
-          month?: string | null
-          overall_score?: number
-          review_date?: string
-          review_period?: string
-          reviewer_id?: string
-          status?: string
-          strengths?: string | null
-          updated_at?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "performance_reviews_employee_id_fkey"
-            columns: ["employee_id"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "performance_reviews_reviewer_id_fkey"
-            columns: ["reviewer_id"]
-            isOneToOne: false
-            referencedRelation: "employees"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      profiles: {
-        Row: {
-          avatar_url: string | null
-          created_at: string
-          email: string | null
-          full_name: string | null
-          id: string
-          role: string | null
-          updated_at: string
-        }
-        Insert: {
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id: string
-          role?: string | null
-          updated_at?: string
-        }
-        Update: {
-          avatar_url?: string | null
-          created_at?: string
-          email?: string | null
-          full_name?: string | null
-          id?: string
-          role?: string | null
-          updated_at?: string
         }
         Relationships: []
       }
@@ -982,10 +530,8 @@ export type Database = {
         Row: {
           created_at: string
           id: string
-          password_policy_enabled: boolean | null
-          totp_confirmed: boolean
           totp_secret: string | null
-          two_factor_backup_codes: string[] | null
+          two_factor_backup_codes: Json | null
           two_factor_enabled: boolean | null
           two_factor_secret: string | null
           two_factor_verified: boolean | null
@@ -995,10 +541,8 @@ export type Database = {
         Insert: {
           created_at?: string
           id?: string
-          password_policy_enabled?: boolean | null
-          totp_confirmed?: boolean
           totp_secret?: string | null
-          two_factor_backup_codes?: string[] | null
+          two_factor_backup_codes?: Json | null
           two_factor_enabled?: boolean | null
           two_factor_secret?: string | null
           two_factor_verified?: boolean | null
@@ -1008,68 +552,12 @@ export type Database = {
         Update: {
           created_at?: string
           id?: string
-          password_policy_enabled?: boolean | null
-          totp_confirmed?: boolean
           totp_secret?: string | null
-          two_factor_backup_codes?: string[] | null
+          two_factor_backup_codes?: Json | null
           two_factor_enabled?: boolean | null
           two_factor_secret?: string | null
           two_factor_verified?: boolean | null
           updated_at?: string
-          user_id?: string
-        }
-        Relationships: []
-      }
-      shared_datasets: {
-        Row: {
-          created_at: string
-          id: string
-          master_user_id: string
-          shared_with_user_id: string
-        }
-        Insert: {
-          created_at?: string
-          id?: string
-          master_user_id: string
-          shared_with_user_id: string
-        }
-        Update: {
-          created_at?: string
-          id?: string
-          master_user_id?: string
-          shared_with_user_id?: string
-        }
-        Relationships: []
-      }
-      user_totp: {
-        Row: {
-          backup_codes: string[] | null
-          created_at: string | null
-          id: string
-          is_enabled: boolean | null
-          is_verified: boolean | null
-          secret: string
-          updated_at: string | null
-          user_id: string
-        }
-        Insert: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          is_verified?: boolean | null
-          secret: string
-          updated_at?: string | null
-          user_id: string
-        }
-        Update: {
-          backup_codes?: string[] | null
-          created_at?: string | null
-          id?: string
-          is_enabled?: boolean | null
-          is_verified?: boolean | null
-          secret?: string
-          updated_at?: string | null
           user_id?: string
         }
         Relationships: []
@@ -1079,26 +567,7 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_effective_user_id: {
-        Args: { user_uuid: string }
-        Returns: string
-      }
-      get_master_user_id: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
-      get_user_employee_ids: {
-        Args: { user_uuid: string }
-        Returns: string[]
-      }
-      get_user_job_application_ids: {
-        Args: { user_uuid: string }
-        Returns: string[]
-      }
-      get_user_job_posting_ids: {
-        Args: { user_uuid: string }
-        Returns: string[]
-      }
+      [_ in never]: never
     }
     Enums: {
       [_ in never]: never

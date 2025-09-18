@@ -16,47 +16,77 @@ export type Database = {
     Tables: {
       attendance: {
         Row: {
+          absent_days: number | null
+          advance: number | null
           branch_id: string
           check_in_time: string | null
           check_out_time: string | null
           created_at: string
           date: string
+          deduction: number | null
           employee_id: string
+          food: number | null
           hours_worked: number | null
           id: string
+          late_days: number | null
+          month: string | null
           notes: string | null
+          ot_hours: number | null
           overtime_hours: number | null
+          present_days: number | null
+          rent_deduction: number | null
           status: string | null
+          uniform: number | null
           updated_at: string
           user_id: string | null
         }
         Insert: {
+          absent_days?: number | null
+          advance?: number | null
           branch_id: string
           check_in_time?: string | null
           check_out_time?: string | null
           created_at?: string
           date: string
+          deduction?: number | null
           employee_id: string
+          food?: number | null
           hours_worked?: number | null
           id?: string
+          late_days?: number | null
+          month?: string | null
           notes?: string | null
+          ot_hours?: number | null
           overtime_hours?: number | null
+          present_days?: number | null
+          rent_deduction?: number | null
           status?: string | null
+          uniform?: number | null
           updated_at?: string
           user_id?: string | null
         }
         Update: {
+          absent_days?: number | null
+          advance?: number | null
           branch_id?: string
           check_in_time?: string | null
           check_out_time?: string | null
           created_at?: string
           date?: string
+          deduction?: number | null
           employee_id?: string
+          food?: number | null
           hours_worked?: number | null
           id?: string
+          late_days?: number | null
+          month?: string | null
           notes?: string | null
+          ot_hours?: number | null
           overtime_hours?: number | null
+          present_days?: number | null
+          rent_deduction?: number | null
           status?: string | null
+          uniform?: number | null
           updated_at?: string
           user_id?: string | null
         }
@@ -408,21 +438,36 @@ export type Database = {
           basic_salary: number | null
           created_at: string
           da_amount: number | null
+          deductions: number | null
           employee_id: string
+          esi_0_75_percent: number | null
           esi_deduction: number | null
           esi_employee_deduction: number | null
           esi_employer_contribution: number | null
+          esi_number: string | null
+          food: number | null
+          gross_earnings: number | null
+          gross_pay: number | null
           gross_salary: number | null
           hra: number | null
           id: string
+          lunch: number | null
           month: number
+          net_pay: number | null
           net_salary: number | null
+          ot_amount: number | null
           other_deductions: number | null
           overtime_amount: number | null
+          pf_12_percent: number | null
           pf_deduction: number | null
+          pf_number: string | null
+          status: string | null
+          take_home: number | null
           total_deductions: number | null
+          uniform: number | null
           updated_at: string
           user_id: string | null
+          worked_days: number | null
           year: number
         }
         Insert: {
@@ -431,21 +476,36 @@ export type Database = {
           basic_salary?: number | null
           created_at?: string
           da_amount?: number | null
+          deductions?: number | null
           employee_id: string
+          esi_0_75_percent?: number | null
           esi_deduction?: number | null
           esi_employee_deduction?: number | null
           esi_employer_contribution?: number | null
+          esi_number?: string | null
+          food?: number | null
+          gross_earnings?: number | null
+          gross_pay?: number | null
           gross_salary?: number | null
           hra?: number | null
           id?: string
+          lunch?: number | null
           month: number
+          net_pay?: number | null
           net_salary?: number | null
+          ot_amount?: number | null
           other_deductions?: number | null
           overtime_amount?: number | null
+          pf_12_percent?: number | null
           pf_deduction?: number | null
+          pf_number?: string | null
+          status?: string | null
+          take_home?: number | null
           total_deductions?: number | null
+          uniform?: number | null
           updated_at?: string
           user_id?: string | null
+          worked_days?: number | null
           year: number
         }
         Update: {
@@ -454,21 +514,36 @@ export type Database = {
           basic_salary?: number | null
           created_at?: string
           da_amount?: number | null
+          deductions?: number | null
           employee_id?: string
+          esi_0_75_percent?: number | null
           esi_deduction?: number | null
           esi_employee_deduction?: number | null
           esi_employer_contribution?: number | null
+          esi_number?: string | null
+          food?: number | null
+          gross_earnings?: number | null
+          gross_pay?: number | null
           gross_salary?: number | null
           hra?: number | null
           id?: string
+          lunch?: number | null
           month?: number
+          net_pay?: number | null
           net_salary?: number | null
+          ot_amount?: number | null
           other_deductions?: number | null
           overtime_amount?: number | null
+          pf_12_percent?: number | null
           pf_deduction?: number | null
+          pf_number?: string | null
+          status?: string | null
+          take_home?: number | null
           total_deductions?: number | null
+          uniform?: number | null
           updated_at?: string
           user_id?: string | null
+          worked_days?: number | null
           year?: number
         }
         Relationships: [

@@ -356,6 +356,7 @@ const Attendance = () => {
         employee_id: selectedEmployeeId,
         date: firstDayOfEditMonth,
         status: 'present',
+        branch_id: selectedEmployee?.branch_id || 'default-branch-id', // Add required branch_id
         // Store numeric values directly in columns
         present_days: Number(editForm.present_days) || 0,
         absent_days: Number(editForm.absent_days) || 0,
@@ -478,6 +479,7 @@ const Attendance = () => {
             employee_id: selectedEmployeeId,
             date: `${deductionsFormMonth}-01`,
             status: 'present',
+            branch_id: selectedEmployee?.branch_id || 'default-branch-id', // Add required branch_id
             rent_deduction: deductionsForm.rent_deduction,
             advance: deductionsForm.advance,
             month: deductionsFormMonth
@@ -693,7 +695,7 @@ const Attendance = () => {
       const { data: payrollData, error: payrollError } = await supabase
         .from('payroll')
         .select('*')
-        .eq('month', new Date(exportMonth).toLocaleString('default', { month: 'long', year: 'numeric' }));
+        .eq('month', parseInt(exportMonth.split('-')[1])) // Convert month to number
       
       if (payrollError) {
         console.error('Error fetching payroll data:', payrollError);

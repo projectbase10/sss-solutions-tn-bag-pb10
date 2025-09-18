@@ -80,13 +80,13 @@ const Check = () => {
             
             const totalFood = branchPayroll.reduce((sum, record) => sum + (record.food || 0), 0) + attendanceFood;
             const totalUniform = branchPayroll.reduce((sum, record) => sum + (record.uniform || 0), 0) + attendanceUniform;
-            const totalPayslip = branchPayroll.reduce((sum, record) => sum + (record.net_pay || 0), 0);
+            const totalPayslip = branchPayroll.reduce((sum, record) => sum + (record.net_pay || record.net_salary || 0), 0);
             const totalLunch = branchPayroll.reduce((sum, record) => sum + (record.lunch || 0), 0);
-            const totalGrossEarnings = branchPayroll.reduce((sum, record) => sum + (record.gross_earnings || record.gross_pay || 0), 0);
-            const totalPF = branchPayroll.reduce((sum, record) => sum + (record.pf_12_percent || 0), 0);
-            const totalESI = branchPayroll.reduce((sum, record) => sum + (record.esi_0_75_percent || 0), 0);
-            const totalOT = branchPayroll.reduce((sum, record) => sum + (record.ot_amount || 0), 0);
-            const totalTakeHome = branchPayroll.reduce((sum, record) => sum + (record.take_home || record.net_pay || 0), 0);
+            const totalGrossEarnings = branchPayroll.reduce((sum, record) => sum + (record.gross_earnings || record.gross_salary || 0), 0);
+            const totalPF = branchPayroll.reduce((sum, record) => sum + (record.pf_12_percent || record.pf_deduction || 0), 0);
+            const totalESI = branchPayroll.reduce((sum, record) => sum + (record.esi_0_75_percent || record.esi_deduction || 0), 0);
+            const totalOT = branchPayroll.reduce((sum, record) => sum + (record.ot_amount || record.overtime_amount || 0), 0);
+            const totalTakeHome = branchPayroll.reduce((sum, record) => sum + (record.take_home || record.net_salary || 0), 0);
             
             const selectedBranchName = branches.find(b => b.id === checkBranch)?.name || 'Unknown Branch';
             const employeeCount = branchPayroll.length;
@@ -224,7 +224,7 @@ const Check = () => {
                             <div className="max-h-96 overflow-y-auto">
                               <div className="space-y-2">
                                 {branchPayroll
-                                  .filter(record => (record.gross_earnings || 0) > 0 || (record.net_pay || 0) > 0)
+                                  .filter(record => (record.gross_earnings || record.gross_salary || 0) > 0 || (record.net_pay || record.net_salary || 0) > 0)
                                   .sort((a, b) => ((a.employees as any)?.batch_number || '').localeCompare(((b.employees as any)?.batch_number || '')))
                                   .map((record, index) => (
                                     <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
@@ -234,12 +234,12 @@ const Check = () => {
                                         <p className="text-sm text-muted-foreground">Batch: {(record.employees as any)?.batch_number || 'N/A'}</p>
                                       </div>
                                       <div className="text-right">
-                                        <p className="font-medium">₹{(record.net_pay || 0).toLocaleString()}</p>
+                                        <p className="font-medium">₹{(record.net_pay || record.net_salary || 0).toLocaleString()}</p>
                                         <p className="text-sm text-muted-foreground">Net Pay</p>
                                       </div>
                                     </div>
                                   ))}
-                                {branchPayroll.filter(record => (record.gross_earnings || 0) > 0 || (record.net_pay || 0) > 0).length === 0 && (
+                                {branchPayroll.filter(record => (record.gross_earnings || record.gross_salary || 0) > 0 || (record.net_pay || record.net_salary || 0) > 0).length === 0 && (
                                   <p className="text-center text-muted-foreground py-4">No employees with payroll data found</p>
                                 )}
                               </div>

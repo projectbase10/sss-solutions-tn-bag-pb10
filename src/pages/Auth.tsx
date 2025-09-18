@@ -347,7 +347,7 @@ const Auth = () => {
                     required
                   />
                 </div>
-                <div className="space-y-2">
+                <div className="space-y-2 hidden">
                   <Label htmlFor="signin-otp">Authenticator code (6 digits)</Label>
                   <div className="flex justify-start">
                     <InputOTP

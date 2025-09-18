@@ -278,20 +278,20 @@ const CustomizedReports = () => {
       // Filter payroll data by month (handle null month values)
       const payrollData = allPayrollData?.filter(record => {
         // First check if month field exists and matches
-        if (record.month && record.month.trim() !== '') {
-          return record.month === monthForQuery;
+        if (record.month && String(record.month).trim() !== '') {
+          return String(record.month) === monthForQuery;
         }
         
         // If no month field, check pay_period_end date
-        if (record.pay_period_end) {
-          const payPeriodEndDate = new Date(record.pay_period_end);
+        if ((record as any).pay_period_end) {
+          const payPeriodEndDate = new Date((record as any).pay_period_end);
           const recordMonthFromDate = payPeriodEndDate.toISOString().slice(0, 7);
           return recordMonthFromDate === monthForQuery;
         }
         
         // If no month field and no pay_period_end, check pay_period_start
-        if (record.pay_period_start) {
-          const payPeriodStartDate = new Date(record.pay_period_start);
+        if ((record as any).pay_period_start) {
+          const payPeriodStartDate = new Date((record as any).pay_period_start);
           const recordMonthFromDate = payPeriodStartDate.toISOString().slice(0, 7);
           return recordMonthFromDate === monthForQuery;
         }

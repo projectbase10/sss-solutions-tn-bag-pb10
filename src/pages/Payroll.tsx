@@ -265,13 +265,17 @@ const Payroll = () => {
               // Create new payroll record
               await createPayroll.mutateAsync({
                 employee_id: employee.id,
-                pay_period_start: payPeriodStart,
-                pay_period_end: payPeriodEnd,
+                // pay_period_start: payPeriodStart, // Removed - doesn't exist in schema
+                // pay_period_end: payPeriodEnd, // Removed - doesn't exist in schema
+                month: parseInt(selectedMonth.split('-')[1]),
+                year: parseInt(selectedMonth.split('-')[0]),
                 basic_salary: basicSalary,
                 hra: hra,
                 allowances: allowances,
-                ot_amount: otAmount,
-                deductions: totalDeductions,
+                // ot_amount: otAmount, // Use overtime_amount instead which exists in schema
+                overtime_amount: otAmount,
+                // deductions: totalDeductions, // Use total_deductions instead which exists in schema
+                total_deductions: totalDeductions,
                 gross_pay: grossPay,
                 net_pay: netPay,
                 status: 'processed',

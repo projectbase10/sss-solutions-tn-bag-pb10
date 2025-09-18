@@ -78,15 +78,15 @@ const Check = () => {
               return sum + (stats?.uniform || 0);
             }, 0);
             
-            const totalFood = branchPayroll.reduce((sum, record) => sum + (record.food || 0), 0) + attendanceFood;
-            const totalUniform = branchPayroll.reduce((sum, record) => sum + (record.uniform || 0), 0) + attendanceUniform;
-            const totalPayslip = branchPayroll.reduce((sum, record) => sum + (record.net_pay || record.net_salary || 0), 0);
-            const totalLunch = branchPayroll.reduce((sum, record) => sum + (record.lunch || 0), 0);
-            const totalGrossEarnings = branchPayroll.reduce((sum, record) => sum + (record.gross_earnings || record.gross_salary || 0), 0);
-            const totalPF = branchPayroll.reduce((sum, record) => sum + (record.pf_12_percent || record.pf_deduction || 0), 0);
-            const totalESI = branchPayroll.reduce((sum, record) => sum + (record.esi_0_75_percent || record.esi_deduction || 0), 0);
-            const totalOT = branchPayroll.reduce((sum, record) => sum + (record.ot_amount || record.overtime_amount || 0), 0);
-            const totalTakeHome = branchPayroll.reduce((sum, record) => sum + (record.take_home || record.net_salary || 0), 0);
+            const totalFood = branchPayroll.reduce((sum, record) => sum + ((record as any).food || 0), 0) + attendanceFood;
+            const totalUniform = branchPayroll.reduce((sum, record) => sum + ((record as any).uniform || 0), 0) + attendanceUniform;
+            const totalPayslip = branchPayroll.reduce((sum, record) => sum + ((record as any).net_pay || record.net_salary || 0), 0);
+            const totalLunch = branchPayroll.reduce((sum, record) => sum + ((record as any).lunch || 0), 0);
+            const totalGrossEarnings = branchPayroll.reduce((sum, record) => sum + ((record as any).gross_earnings || record.gross_salary || 0), 0);
+            const totalPF = branchPayroll.reduce((sum, record) => sum + ((record as any).pf_12_percent || record.pf_deduction || 0), 0);
+            const totalESI = branchPayroll.reduce((sum, record) => sum + ((record as any).esi_0_75_percent || record.esi_deduction || 0), 0);
+            const totalOT = branchPayroll.reduce((sum, record) => sum + ((record as any).ot_amount || record.overtime_amount || 0), 0);
+            const totalTakeHome = branchPayroll.reduce((sum, record) => sum + ((record as any).take_home || record.net_salary || 0), 0);
             
             const selectedBranchName = branches.find(b => b.id === checkBranch)?.name || 'Unknown Branch';
             const employeeCount = branchPayroll.length;
@@ -224,7 +224,7 @@ const Check = () => {
                             <div className="max-h-96 overflow-y-auto">
                               <div className="space-y-2">
                                 {branchPayroll
-                                  .filter(record => (record.gross_earnings || record.gross_salary || 0) > 0 || (record.net_pay || record.net_salary || 0) > 0)
+                                  .filter(record => ((record as any).gross_earnings || record.gross_salary || 0) > 0 || ((record as any).net_pay || record.net_salary || 0) > 0)
                                   .sort((a, b) => ((a.employees as any)?.batch_number || '').localeCompare(((b.employees as any)?.batch_number || '')))
                                   .map((record, index) => (
                                     <div key={index} className="flex justify-between items-center p-3 border rounded-lg">
@@ -234,12 +234,12 @@ const Check = () => {
                                         <p className="text-sm text-muted-foreground">Batch: {(record.employees as any)?.batch_number || 'N/A'}</p>
                                       </div>
                                       <div className="text-right">
-                                        <p className="font-medium">₹{(record.net_pay || record.net_salary || 0).toLocaleString()}</p>
+                                        <p className="font-medium">₹{((record as any).net_pay || record.net_salary || 0).toLocaleString()}</p>
                                         <p className="text-sm text-muted-foreground">Net Pay</p>
                                       </div>
                                     </div>
                                   ))}
-                                {branchPayroll.filter(record => (record.gross_earnings || record.gross_salary || 0) > 0 || (record.net_pay || record.net_salary || 0) > 0).length === 0 && (
+                                {branchPayroll.filter(record => ((record as any).gross_earnings || record.gross_salary || 0) > 0 || ((record as any).net_pay || record.net_salary || 0) > 0).length === 0 && (
                                   <p className="text-center text-muted-foreground py-4">No employees with payroll data found</p>
                                 )}
                               </div>
@@ -293,14 +293,14 @@ const Check = () => {
                                     
                                     // Add payroll records with deductions
                                     branchPayroll.forEach(record => {
-                                      if ((record.pf_12_percent || 0) > 0 || (record.esi_0_75_percent || 0) > 0 || (record.deductions || 0) > 0) {
+                                      if (((record as any).pf_12_percent || record.pf_deduction || 0) > 0 || ((record as any).esi_0_75_percent || record.esi_deduction || 0) > 0 || ((record as any).deductions || record.total_deductions || 0) > 0) {
                                         combinedData.push({
                                           name: record.employees?.name,
                                           employee_id: record.employees?.employee_id,
                                           batch_number: (record.employees as any)?.batch_number,
-                                          pf: record.pf_12_percent || 0,
-                                          esi: record.esi_0_75_percent || 0,
-                                          deduction: record.deductions || 0
+                                          pf: (record as any).pf_12_percent || record.pf_deduction || 0,
+                                          esi: (record as any).esi_0_75_percent || record.esi_deduction || 0,
+                                          deduction: (record as any).deductions || record.total_deductions || 0
                                         });
                                       }
                                     });
@@ -354,12 +354,12 @@ const Check = () => {
                                     
                                     // Add payroll records with OT
                                     branchPayroll.forEach(record => {
-                                      if ((record.ot_amount || 0) > 0) {
+                                      if (((record as any).ot_amount || record.overtime_amount || 0) > 0) {
                                         combinedData.push({
                                           name: record.employees?.name,
                                           employee_id: record.employees?.employee_id,
                                           batch_number: (record.employees as any)?.batch_number,
-                                          ot: record.ot_amount || 0
+                                          ot: (record as any).ot_amount || record.overtime_amount || 0
                                         });
                                       }
                                     });

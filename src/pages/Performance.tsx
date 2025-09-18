@@ -33,11 +33,13 @@ const Performance = () => {
     try {
       const selectedEmployee = employees.find(emp => emp.id === goalForm.employee_id);
 
-      const { data, error } = await supabase
-        .from('goals')
-        .insert([goalForm]);
-
-      if (error) throw error;
+      // Since goals table doesn't exist, we'll show a message
+      toast({
+        title: "Feature Not Available",
+        description: "Goals functionality is not yet implemented.",
+        variant: "destructive",
+      });
+      return;
 
       toast({
         title: "Goal Set",

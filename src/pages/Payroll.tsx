@@ -240,8 +240,8 @@ const Payroll = () => {
             .from('payroll')
             .select('id')
             .eq('employee_id', employee.id)
-            .eq('pay_period_start', payPeriodStart)
-            .eq('pay_period_end', payPeriodEnd)
+            .eq('month', parseInt(selectedMonth.split('-')[1]))
+            .eq('year', parseInt(selectedMonth.split('-')[0]))
             .maybeSingle();
 
           if (existingPayroll) {
@@ -252,12 +252,11 @@ const Payroll = () => {
                 basic_salary: basicSalary,
                 hra: hra,
                 allowances: allowances,
-                ot_amount: otAmount,
-                deductions: totalDeductions,
-                gross_pay: grossPay,
-                net_pay: netPay,
+                overtime_amount: otAmount,
+                total_deductions: totalDeductions,
+                gross_salary: grossPay,
+                net_salary: netPay,
                 status: 'processed',
-                processed_at: new Date().toISOString(),
                 updated_at: new Date().toISOString(),
               })
               .eq('id', existingPayroll.id);
@@ -265,21 +264,16 @@ const Payroll = () => {
               // Create new payroll record
               await createPayroll.mutateAsync({
                 employee_id: employee.id,
-                // pay_period_start: payPeriodStart, // Removed - doesn't exist in schema
-                // pay_period_end: payPeriodEnd, // Removed - doesn't exist in schema
                 month: parseInt(selectedMonth.split('-')[1]),
                 year: parseInt(selectedMonth.split('-')[0]),
                 basic_salary: basicSalary,
                 hra: hra,
                 allowances: allowances,
-                // ot_amount: otAmount, // Use overtime_amount instead which exists in schema
                 overtime_amount: otAmount,
-                // deductions: totalDeductions, // Use total_deductions instead which exists in schema
                 total_deductions: totalDeductions,
-                gross_pay: grossPay,
-                net_pay: netPay,
+                gross_salary: grossPay,
+                net_salary: netPay,
                 status: 'processed',
-                processed_at: new Date().toISOString(),
               });
           }
           

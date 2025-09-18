@@ -33,9 +33,9 @@ const Dashboard = () => {
   };
 
   const payrollStats = {
-    totalPayroll: payrollRecords.reduce((sum, record) => sum + record.net_pay, 0),
-    processedCount: payrollRecords.filter(r => r.status === 'processed').length,
-    draftCount: payrollRecords.filter(r => r.status === 'draft').length,
+    totalPayroll: payrollRecords.reduce((sum, record) => sum + (record.net_salary || record.net_pay || 0), 0),
+    processedCount: payrollRecords.filter(r => (r.status || 'draft') === 'processed').length,
+    draftCount: payrollRecords.filter(r => (r.status || 'draft') === 'draft').length,
     totalEmployees: employees.length,
   };
 
@@ -246,7 +246,7 @@ const Dashboard = () => {
                       </div>
                       <div>
                         <p className="font-medium">{request.employees?.name || 'Unknown'}</p>
-                        <p className="text-sm text-gray-500">{request.leave_type} - {request.days_count} days</p>
+                        <p className="text-sm text-gray-500">{request.leave_type} - {Math.ceil((new Date(request.end_date).getTime() - new Date(request.start_date).getTime()) / (1000 * 3600 * 24)) + 1} days</p>
                       </div>
                     </div>
                     <Badge 

@@ -57,7 +57,6 @@ const Leave = () => {
         leave_type: leaveForm.leave_type,
         start_date: leaveForm.start_date,
         end_date: leaveForm.end_date,
-        days_count: daysDiff,
         reason: leaveForm.reason,
         status: 'pending',
       });
@@ -125,7 +124,8 @@ const Leave = () => {
       + "Employee ID,Employee Name,Leave Type,Start Date,End Date,Days,Reason,Status,Applied Date\n"
       + filteredRequests.map(request => {
         const employee = employees.find(emp => emp.id === request.employee_id);
-        return `${employee?.employee_id || ''},${employee?.name || ''},${request.leave_type},${request.start_date},${request.end_date},${request.days_count},${request.reason || ''},${request.status},${new Date(request.created_at).toLocaleDateString()}`;
+        const daysDiff = Math.ceil((new Date(request.end_date).getTime() - new Date(request.start_date).getTime()) / (1000 * 3600 * 24)) + 1;
+        return `${employee?.employee_id || ''},${employee?.name || ''},${request.leave_type},${request.start_date},${request.end_date},${daysDiff},${request.reason || ''},${request.status},${new Date(request.created_at).toLocaleDateString()}`;
       }).join("\n");
     
     const encodedUri = encodeURI(csvContent);
@@ -298,7 +298,7 @@ const Leave = () => {
                       <p className="text-sm font-medium">
                         {new Date(request.start_date).toLocaleDateString()} - {new Date(request.end_date).toLocaleDateString()}
                       </p>
-                      <p className="text-sm text-gray-600">{request.days_count} days</p>
+                      <p className="text-sm text-gray-600">{Math.ceil((new Date(request.end_date).getTime() - new Date(request.start_date).getTime()) / (1000 * 3600 * 24)) + 1} days</p>
                     </div>
                     {request.status === 'pending' && (
                       <div className="flex space-x-2">

@@ -25,6 +25,22 @@ export interface PayrollRecord {
   created_at: string;
   updated_at: string;
   user_id?: string | null;
+  // Additional properties from database schema
+  status?: string | null;
+  net_pay?: number | null;
+  gross_pay?: number | null;
+  gross_earnings?: number | null;
+  worked_days?: number | null;
+  pf_12_percent?: number | null;
+  esi_0_75_percent?: number | null;
+  ot_amount?: number | null;
+  take_home?: number | null;
+  food?: number | null;
+  uniform?: number | null;
+  lunch?: number | null;
+  deductions?: number | null;
+  pf_number?: string | null;
+  esi_number?: string | null;
   employees?: {
     name: string;
     employee_id: string;

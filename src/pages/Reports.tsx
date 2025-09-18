@@ -98,12 +98,8 @@ const Reports = () => {
         
       case 'payroll':
         filteredData = payroll.filter(record => {
-          if (record.month) {
-            return record.month === month;
-          }
-          const payPeriodDate = new Date(record.pay_period_start);
-          const recordMonth = payPeriodDate.toISOString().slice(0, 7);
-          return recordMonth === month;
+          const recordMonth = parseInt(month.split('-')[1]);
+          return record.month === recordMonth;
         });
         headers = ["Month", "Employee", "Basic Salary", "HRA", "Allowances", "Gross Pay", "Deductions", "Net Pay", "Status"];
         filename = "payroll_report";

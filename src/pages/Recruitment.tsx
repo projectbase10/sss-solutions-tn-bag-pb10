@@ -29,103 +29,45 @@ const Recruitment = () => {
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Fetch recruitment data
+  // Mock data since recruitment tables don't exist
   const { data: jobPostings = [] } = useQuery({
     queryKey: ['jobPostings'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('job_postings')
-        .select('*')
-        .order('created_at', { ascending: false });
-      if (error) throw error;
-      return data;
+      // Return empty array since table doesn't exist
+      return [];
     }
   });
 
   const { data: applications = [] } = useQuery({
     queryKey: ['jobApplications'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('job_applications')
-        .select(`
-          *,
-          job_postings (title)
-        `)
-        .order('applied_at', { ascending: false });
-      if (error) throw error;
-      return data;
+      // Return empty array since table doesn't exist
+      return [];
     }
   });
 
   const { data: interviews = [] } = useQuery({
     queryKey: ['interviews'],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from('interviews')
-        .select(`
-          *,
-          job_applications (
-            candidate_name,
-            candidate_email,
-            job_postings (title)
-          )
-        `)
-        .order('interview_date', { ascending: false });
-      if (error) throw error;
-      return data;
+      // Return empty array since table doesn't exist
+      return [];
     }
   });
 
-  // Calculate metrics
+  // Calculate metrics with fallback for non-existent tables
   const recruitmentStats = {
-    activeJobs: jobPostings.filter(job => job.status === 'active').length,
-    totalApplications: applications.length,
-    scheduledInterviews: interviews.filter(interview => interview.status === 'scheduled').length,
-    hiredThisMonth: applications.filter(app => {
-      const appliedDate = new Date(app.applied_at);
-      const currentMonth = new Date().getMonth();
-      return appliedDate.getMonth() === currentMonth && app.status === 'hired';
-    }).length
+    activeJobs: 0,
+    totalApplications: 0,
+    scheduledInterviews: 0,
+    hiredThisMonth: 0
   };
 
   const handlePostJob = async () => {
-    try {
-      const { error } = await supabase
-        .from('job_postings')
-        .insert([{
-          ...newJob,
-          department: 'General',
-          status: 'active',
-          posted_date: new Date().toISOString().split('T')[0]
-        }]);
-      
-      if (error) throw error;
-      
-      // Refresh the job postings list
-      queryClient.invalidateQueries({ queryKey: ['jobPostings'] });
-      
-      toast({
-        title: "Success",
-        description: "Job posting created successfully!",
-      });
-      
-      setShowPostJobDialog(false);
-      setNewJob({
-        title: '',
-        
-        location: '',
-        job_type: '',
-        description: '',
-        requirements: '',
-        application_deadline: ''
-      });
-    } catch (error) {
-      toast({
-        title: "Error",
-        description: "Failed to create job posting. Please try again.",
-        variant: "destructive",
-      });
-    }
+    toast({
+      title: "Feature Not Available",
+      description: "Recruitment functionality is not yet implemented.",
+      variant: "destructive",
+    });
   };
 
   const handleViewJob = (job) => {

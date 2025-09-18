@@ -113,7 +113,7 @@ const SettingsContent = () => {
     if (securitySettings) {
       setSecurityForm({
         two_factor_enabled: securitySettings.two_factor_enabled,
-        password_policy_enabled: securitySettings.password_policy_enabled
+        password_policy_enabled: false // Default value since this field doesn't exist in schema
       });
     }
   }, [securitySettings]);

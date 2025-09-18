@@ -43,7 +43,7 @@ const LeaveReport = () => {
     const csvContent = "data:text/csv;charset=utf-8," 
       + "Month,Employee,Leave Type,Start Date,End Date,Days,Status,Reason\n"
       + leaveRequests.map(record => 
-        `${(record as any).month || 'N/A'},${(record as any).employees?.name || 'N/A'},${record.leave_type},${record.start_date},${record.end_date},${record.days_count},${record.status},${record.reason || 'N/A'}`
+        `${(record as any).month || 'N/A'},${(record as any).employees?.name || 'N/A'},${record.leave_type},${record.start_date},${record.end_date},${Math.ceil((new Date(record.end_date).getTime() - new Date(record.start_date).getTime()) / (1000 * 60 * 60 * 24)) + 1},${record.status},${record.reason || 'N/A'}`
       ).join("\n");
     
     const encodedUri = encodeURI(csvContent);

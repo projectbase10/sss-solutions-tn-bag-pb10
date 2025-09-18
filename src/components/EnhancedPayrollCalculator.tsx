@@ -191,7 +191,7 @@ const EnhancedPayrollCalculator: React.FC<PayrollCalculatorProps> = ({
         esi_deduction: formData.esi_0_75_percent,
         advance_deduction: formData.advance,
         other_deductions: formData.food,
-        total_deductions: formData.total_deduction,
+        total_deductions: formData.deductions,
         net_salary: formData.take_home,
       };
 

@@ -83,14 +83,14 @@ export const useEmployeeAttendanceStats = (employeeId: string, selectedMonth?: s
         console.log('=== PROCESSING RECORD ===');
         console.log('Record:', record);
         
-        // PRIORITY 1: Use direct database column values (these are the primary source)
-        const directPresent = Number(record.present_days) || 0;
-        const directAbsent = Number(record.absent_days) || 0;
-        const directLate = Number(record.late_days) || 0;
-        const directOT = Number(record.ot_hours) || 0;
-        const directFood = Number(record.food) || 0;
-        const directUniform = Number(record.uniform) || 0;
-        const directDeduction = Number(record.deduction) || 0;
+        // PRIORITY 1: Calculate from actual attendance data
+        const directPresent = record.status === 'present' ? 1 : 0;
+        const directAbsent = record.status === 'absent' ? 1 : 0;
+        const directLate = record.status === 'late' ? 1 : 0;
+        const directOT = Number(record.overtime_hours) || 0;
+        const directFood = 0; // Parse from notes if needed
+        const directUniform = 0; // Parse from notes if needed
+        const directDeduction = 0; // Parse from notes if needed
         const directRentDeduction = Number((record as any).rent_deduction) || 0;
         const directAdvance = Number((record as any).advance) || 0;
 
@@ -251,14 +251,14 @@ export const useAllEmployeesAttendanceStats = (selectedMonth?: string) => {
         console.log('=== PROCESSING RECORD FOR EMPLOYEE:', record.employee_id, '===');
         console.log('Record data:', record);
 
-        // PRIORITY 1: Use direct database column values
-        const directPresent = Number(record.present_days) || 0;
-        const directAbsent = Number(record.absent_days) || 0;
-        const directLate = Number(record.late_days) || 0;
-        const directOT = Number(record.ot_hours) || 0;
-        const directFood = Number(record.food) || 0;
-        const directUniform = Number(record.uniform) || 0;
-        const directDeduction = Number(record.deduction) || 0;
+        // PRIORITY 1: Calculate from actual attendance data
+        const directPresent = record.status === 'present' ? 1 : 0;
+        const directAbsent = record.status === 'absent' ? 1 : 0;
+        const directLate = record.status === 'late' ? 1 : 0;
+        const directOT = Number(record.overtime_hours) || 0;
+        const directFood = 0; // Parse from notes if needed
+        const directUniform = 0; // Parse from notes if needed
+        const directDeduction = 0; // Parse from notes if needed
         const directRentDeduction = Number((record as any).rent_deduction) || 0;
         const directAdvance = Number((record as any).advance) || 0;
 

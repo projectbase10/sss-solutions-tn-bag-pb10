@@ -9,7 +9,7 @@ interface EmployeeDocument {
   document_type: string | null;
   file_url: string;
   uploaded_at: string | null;
-  created_at: string | null;
+  user_id: string | null;
 }
 
 export const useEmployeeDocuments = (employeeId: string) => {

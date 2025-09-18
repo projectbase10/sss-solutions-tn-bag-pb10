@@ -1,4 +1,3 @@
-
 import { supabase } from '@/integrations/supabase/client';
 
 export interface AttendanceStats {
@@ -32,7 +31,7 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
 
   const { data, error } = await supabase
     .from('attendance')
-    .select('employee_id, status, check_in_time, check_out_time, notes, present_days, absent_days, late_days, ot_hours, food, uniform, rent_deduction, advance, month')
+    .select('employee_id, status, check_in_time, check_out_time, notes, overtime_hours')
     .gte('date', startOfMonth)
     .lte('date', endOfMonth);
 
@@ -63,33 +62,8 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
 
     const stats = employeeStats[record.employee_id];
 
-    // Prefer direct numeric columns when available AND have meaningful values (monthly aggregates)
-    const hasDirectValues = 
-      (record.present_days && record.present_days > 0) ||
-      (record.absent_days && record.absent_days > 0) ||
-      (record.late_days && record.late_days > 0) ||
-      (record.ot_hours && record.ot_hours > 0) ||
-      (record.food && record.food > 0) ||
-      (record.uniform && record.uniform > 0) ||
-      (record.rent_deduction && record.rent_deduction > 0) ||
-      (record.advance && record.advance > 0);
-    
-    if (hasDirectValues) {
-      stats.present_days += Number(record.present_days || 0);
-      stats.absent_days += Number(record.absent_days || 0);
-      stats.late_days += Number(record.late_days || 0);
-      stats.ot_hours += Number(record.ot_hours || 0);
-      stats.food += Number(record.food || 0);
-      stats.uniform += Number(record.uniform || 0);
-      stats.rent_deduction += Number(record.rent_deduction || 0);
-      stats.advance += Number(record.advance || 0);
-      console.log(`Direct columns for ${record.employee_id}: rent=${record.rent_deduction}, advance=${record.advance}`);
-      return;
-    }
-
-
+    // First try to parse from notes (for manual entries with JSON data)
     try {
-      // Check if this is a manual entry with JSON data in notes
       if (record.notes && record.status === 'present') {
         const parsedNotes = JSON.parse(record.notes);
         if (parsedNotes.present_days !== undefined) {
@@ -108,7 +82,7 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
       // If JSON parsing fails, fall back to counting individual records
     }
 
-    // Count individual records for non-manual entries
+    // Count individual records based on status
     switch (record.status) {
       case 'present':
         stats.present_days++;
@@ -121,8 +95,13 @@ export const fetchAttendanceStats = async (selectedMonth: string): Promise<Recor
         break;
     }
 
-    // Calculate OT hours based on check-in/check-out times
-    if (record.check_in_time && record.check_out_time) {
+    // Add overtime hours from the database field
+    if (record.overtime_hours) {
+      stats.ot_hours += Number(record.overtime_hours);
+    }
+
+    // Calculate OT hours based on check-in/check-out times if not already in overtime_hours
+    if (!record.overtime_hours && record.check_in_time && record.check_out_time) {
       const checkIn = new Date(`1970-01-01T${record.check_in_time}`);
       const checkOut = new Date(`1970-01-01T${record.check_out_time}`);
       const workHours = (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60);

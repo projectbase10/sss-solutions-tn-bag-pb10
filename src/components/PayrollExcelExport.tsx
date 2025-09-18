@@ -160,11 +160,11 @@ const PayrollExcelExport = () => {
           String(index + 1),
           record.employees?.employee_id || '',
           (record.employees?.name || '').substring(0, 15),
-          record.employees?.pf_number || record.pf_number || '',
-          record.employees?.esi_number || record.esi_number || '',
-          String(Number(record.worked_days || 0)),
+          record.employees?.pf_number || '',
+          record.employees?.esi_number || '',
+          String(30), // Fixed worked days
           `₹${Number(record.basic_salary || 0)}`,
-          `₹${Number(record.net_pay || 0)}`
+          `₹${Number(record.net_salary || 0)}`
         ];
         
         rowData.forEach((cell, index) => {

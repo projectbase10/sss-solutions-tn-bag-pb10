@@ -148,8 +148,8 @@ const TwoFactorAuth = () => {
             : [],
           totp_confirmed: data.two_factor_verified || false,
           totp_secret: data.totp_secret || '',
-          created_at: data.created_at,
-          updated_at: data.updated_at,
+          // created_at: data.created_at, // Remove as it's not part of SecuritySettings interface
+          // updated_at: data.updated_at, // Remove as it's not part of SecuritySettings interface
           id: data.id,
           user_id: data.user_id
         });

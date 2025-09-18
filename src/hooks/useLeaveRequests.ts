@@ -8,13 +8,13 @@ export interface LeaveRequest {
   leave_type: 'annual' | 'sick' | 'casual' | 'vacation' | 'personal' | 'maternity';
   start_date: string;
   end_date: string;
-  days_count: number;
   reason?: string;
   status: 'pending' | 'approved' | 'rejected';
   approved_by?: string;
   approved_at?: string;
   created_at: string;
   updated_at: string;
+  user_id?: string;
   employees?: {
     name: string;
     employee_id: string;
@@ -31,7 +31,7 @@ export const useLeaveRequests = () => {
         .order('created_at', { ascending: false });
       
       if (error) throw error;
-      return data as LeaveRequest[];
+      return data;
     },
   });
 };
@@ -42,7 +42,7 @@ export const useLeaveStats = () => {
     queryFn: async () => {
       const { data, error } = await supabase
         .from('leave_requests')
-        .select('leave_type, status, days_count');
+        .select('leave_type, status');
       
       if (error) throw error;
 

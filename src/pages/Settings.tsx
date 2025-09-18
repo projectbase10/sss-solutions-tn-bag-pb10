@@ -173,7 +173,7 @@ const SettingsContent = () => {
 
   const settingsNavigation = [
     { id: 'general', name: 'General', icon: SettingsIcon },
-    { id: 'two-factor', name: 'Two-Factor Auth', icon: Shield },
+    // { id: 'two-factor', name: 'Two-Factor Auth', icon: Shield }, // Hidden
     { id: 'payroll', name: 'Payroll Settings', icon: User },
     { id: 'users', name: 'User Management', icon: User },
     { id: 'security', name: 'Security', icon: Shield },
@@ -292,7 +292,7 @@ const SettingsContent = () => {
               </Card>
             </TabsContent>
 
-            <TabsContent value="two-factor" className="space-y-4">
+            <TabsContent value="two-factor" className="space-y-4 hidden">
               <TwoFactorAuth />
             </TabsContent>
 
@@ -425,7 +425,7 @@ const SettingsContent = () => {
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-4">
-                    <div className="flex items-center justify-between">
+                    <div className="flex items-center justify-between hidden">
                       <div>
                         <h3 className="font-semibold">Two-Factor Authentication</h3>
                         <p className="text-sm text-gray-600">Add an extra layer of security</p>

@@ -200,6 +200,19 @@ const Attendance = () => {
       // Use the selected month from form, setting date to first day of that month
       const firstDayOfMonth = `${selectedFormMonth}-01`;
       
+       // Get the employee's branch_id
+       let branchId = attendanceForm.branch_id;
+       
+       // If "all" is selected or no branch_id, get it from the employee
+       if (!branchId || branchId === 'all') {
+         branchId = selectedEmployee?.branch_id;
+       }
+      
+      // If still no branch_id, throw an error
+      if (!branchId) {
+        throw new Error(`Employee ${selectedEmployee?.name} must be assigned to a branch first.`);
+      }
+
       const attendanceRecord = {
         employee_id: attendanceForm.employee_id,
         date: firstDayOfMonth,
@@ -212,7 +225,7 @@ const Attendance = () => {
         uniform: uniform,
         deduction: 0,
         month: selectedFormMonth,
-        branch_id: null,
+        branch_id: branchId,
         check_in_time: null,
         check_out_time: null,
         notes: JSON.stringify({
@@ -921,33 +934,33 @@ const Attendance = () => {
                 <div className="grid grid-cols-2 gap-4">
                   <div>
                     <Label htmlFor="presentDays">Present Days</Label>
-                    <Input 
-                      id="presentDays"
-                      type="number" 
-                      value={attendanceForm.present_days} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, present_days: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="presentDays"
+                       type="number" 
+                       value={attendanceForm.present_days} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, present_days: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="absentDays">Absent Days</Label>
-                    <Input 
-                      id="absentDays"
-                      type="number" 
-                      value={attendanceForm.absent_days} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, absent_days: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="absentDays"
+                       type="number" 
+                       value={attendanceForm.absent_days} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, absent_days: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="lateDays">Late Days</Label>
-                    <Input 
-                      id="lateDays"
-                      type="number" 
-                      value={attendanceForm.late_days} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, late_days: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="lateDays"
+                       type="number" 
+                       value={attendanceForm.late_days} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, late_days: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="otHours">{
@@ -955,44 +968,44 @@ const Attendance = () => {
                         ? 'Driver OT Hours' 
                         : 'OT Hours'
                     }</Label>
-                    <Input 
-                      id="otHours"
-                      type="number" 
-                      step="0.5" 
-                      value={attendanceForm.ot_hours} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, ot_hours: parseFloat(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="otHours"
+                       type="number" 
+                       step="0.5" 
+                       value={attendanceForm.ot_hours} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, ot_hours: e.target.value === '' ? 0 : parseFloat(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="food">Food</Label>
-                    <Input 
-                      id="food"
-                      type="number" 
-                      value={attendanceForm.food} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, food: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="food"
+                       type="number" 
+                       value={attendanceForm.food} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, food: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="uniform">Uniform</Label>
-                    <Input 
-                      id="uniform"
-                      type="number" 
-                      value={attendanceForm.uniform} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, uniform: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="uniform"
+                       type="number" 
+                       value={attendanceForm.uniform} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, uniform: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="allowance">Allowance</Label>
-                    <Input 
-                      id="allowance"
-                      type="number" 
-                      value={attendanceForm.allowance} 
-                      onChange={(e) => setAttendanceForm({ ...attendanceForm, allowance: parseInt(e.target.value) || 0 })} 
-                      placeholder="0" 
-                    />
+                     <Input 
+                       id="allowance"
+                       type="number" 
+                       value={attendanceForm.allowance} 
+                       onChange={(e) => setAttendanceForm({ ...attendanceForm, allowance: e.target.value === '' ? 0 : parseInt(e.target.value) })} 
+                       placeholder="0" 
+                     />
                   </div>
                   <div>
                     <Label htmlFor="rent_deduction">Rent Deduction</Label>

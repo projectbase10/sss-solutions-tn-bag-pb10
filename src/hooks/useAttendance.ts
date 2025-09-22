@@ -111,7 +111,9 @@ export const useCreateAttendance = () => {
       if (!user) throw new Error('User not authenticated');
       
       // Get employee's current branch_id if not provided
-      if (!attendance.branch_id) {
+      let finalBranchId = attendance.branch_id;
+      
+      if (!finalBranchId || finalBranchId === 'all') {
         const { data: employee } = await supabase
           .from('employees')
           .select('branch_id')
@@ -119,15 +121,20 @@ export const useCreateAttendance = () => {
           .single();
         
         if (employee?.branch_id) {
-          attendance.branch_id = employee.branch_id;
+          finalBranchId = employee.branch_id;
         }
+      }
+      
+      // If we still don't have a valid branch_id, throw an error
+      if (!finalBranchId || finalBranchId === 'all') {
+        throw new Error('Employee must have a valid branch assigned. Please assign the employee to a branch first.');
       }
       
       const { data, error } = await supabase
         .from('attendance')
         .insert({
           ...attendance,
-          branch_id: attendance.branch_id || 'default-branch'
+          branch_id: finalBranchId
         })
         .select();
       

@@ -79,7 +79,7 @@ const EnhancedPayrollTable = () => {
                 // Use the new formula: Earned Basic = Basic Salary × Present Days - precise decimals
                 const basicSalary = record.basic_salary || 0;
                 const daAmount = record.da_amount || 0;
-                const workedDays = attendanceData?.present_days || 0;
+                const workedDays = attendanceData?.present_days || 30;
                 const earnedBasic = basicSalary * workedDays;
                 const earnedDA = daAmount * workedDays;
                 

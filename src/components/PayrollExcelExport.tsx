@@ -267,9 +267,6 @@ const PayrollExcelExport = () => {
           
           console.log(`Payroll Employee ${employee?.name}: Per Day Salary = ${perDaySalary}`);
           
-          // Get actual worked days from attendance stats
-          const actualWorkedDays = employeeStats.present_days || 0;
-          
         // FIXED CALCULATION: Use the formula for ALL employees - precise decimals
         // basic salary = perday salary * 0.60
         // da salary = perday salary * 0.40
@@ -279,8 +276,8 @@ const PayrollExcelExport = () => {
         // FIXED CALCULATION: Use the formula for ALL employees - precise decimals
         // basic salary earned = basic salary * worked days
         // da earned = da * worked days
-        const earnedBasic = basicSalary * actualWorkedDays;
-        const earnedDA = daSalary * actualWorkedDays;
+        const earnedBasic = basicSalary * 30;
+        const earnedDA = daSalary * 30;
           const extraHours = Math.round(Number((employeeStats as any)?.ot_hours || 0) * 60);
           
           const uncappedGrossEarnings = earnedBasic + earnedDA + extraHours;
@@ -306,7 +303,7 @@ const PayrollExcelExport = () => {
             'Name of the Employee': employee?.name || '',
             'PF Number': employee?.pf_number || '',
             'ESI Number': employee?.esi_number || '',
-            'Worked Days': actualWorkedDays,
+            'Worked Days': 30,
             'OT Hrs': Number((employeeStats as any)?.ot_hours || 0).toFixed(1),
             'OT Amount': extraHours,
             'Per Day Salary': perDaySalary,

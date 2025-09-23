@@ -112,7 +112,7 @@ export const drawPayslipSection = (
   let basicPlusDA, hraAmount, allowancesAmount, otAmount, grossEarnings, pf, esi, totalDeductions, netPay;
 
   // Always compute fallback values first from employee + attendance
-  const workedDays = (payroll?.worked_days && payroll.worked_days > 0) ? payroll.worked_days : (stats.present_days || 0);
+  const workedDays = (payroll?.worked_days ?? stats.present_days ?? 0);
 
   const perDaySalary = (employee.per_day_salary && employee.per_day_salary > 0)
     ? employee.per_day_salary

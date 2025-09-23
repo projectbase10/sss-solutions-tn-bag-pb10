@@ -336,9 +336,6 @@ const Payroll = () => {
     const branch = branches.find(b => b.id === employee.branch_id);
     const branchName = branch?.name || 'N/A';
 
-    // Get actual worked days from attendance stats
-    const attendanceData = attendanceStats[employee.id];
-    const actualWorkedDays = attendanceData?.present_days || 0;
     // Create PDF using jsPDF with portrait orientation  
     const doc = new jsPDF({
       orientation: 'portrait',
@@ -368,13 +365,12 @@ const Payroll = () => {
     doc.text(`Employee Name: ${employee.name}`, 20, 59);
     doc.text(`Designation: ${employee.position}`, 20, 66);
     doc.text(`Date of Join: ${new Date(employee.join_date).toLocaleDateString()}`, 20, 73);
-    doc.text(`Worked Days: ${actualWorkedDays}`, 20, 80);
+    doc.text(`OT Hrs: 12.0 hrs`, 20, 80);
 
     // Right side information above deductions
     doc.text(`Generated: ${new Date().toLocaleDateString()}`, 105, 52);
     doc.text(`PF Number: ${employee.pf_number || '123sehsd243y'}`, 105, 59);
     doc.text(`ESI Number: ${employee.esi_number || '1234578462'}`, 105, 66);
-    doc.text(`OT Hrs: ${attendanceData?.ot_hours?.toFixed(1) || '0.0'} hrs`, 105, 73);
 
     // Earnings Section
     doc.setFontSize(12);

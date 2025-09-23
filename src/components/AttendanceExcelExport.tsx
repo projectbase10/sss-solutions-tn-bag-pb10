@@ -107,10 +107,35 @@ const AttendanceExcelExport: React.FC = () => {
       const selectedBranch = branches.find(b => b.id === branchId);
       const isSpecialESIBranch = selectedBranch && ['UP-TN', 'UP-BAG'].includes(selectedBranch.name);
 
+      // Calculate actual worked days for each employee from attendance records
+      const employeeWorkedDays: Record<string, number> = {};
+      filteredData.forEach(record => {
+        if (!employeeWorkedDays[record.employee_id]) {
+          employeeWorkedDays[record.employee_id] = 0;
+        }
+        
+        // Count present days from individual records or from notes
+        if (record.status === 'present') {
+          if (record.notes) {
+            try {
+              const parsedNotes = JSON.parse(record.notes);
+              employeeWorkedDays[record.employee_id] += parsedNotes.present_days || 1;
+            } catch (e) {
+              employeeWorkedDays[record.employee_id] += 1;
+            }
+          } else {
+            employeeWorkedDays[record.employee_id] += 1;
+          }
+        }
+      });
+
       // Enhanced format with CORRECT Basic/DA calculations for ALL employees
-      const excelData = filteredData.map((record, index) => {
+      const employeeRecords = Object.keys(employeeWorkedDays).map(employeeId => {
+        const record = filteredData.find(r => r.employee_id === employeeId);
+        if (!record) return null;
+        
         // Get per_day_salary using the improved logic for ALL employees
-        const perDaySalary = getEmployeePerDaySalary(record.employee_id);
+        const perDaySalary = getEmployeePerDaySalary(employeeId);
         
         console.log(`Employee ${record.employees?.name}: Per Day Salary = ${perDaySalary}`);
         
@@ -120,9 +145,30 @@ const AttendanceExcelExport: React.FC = () => {
         const basicSalary = perDaySalary * 0.60;
         const daSalary = perDaySalary * 0.40;
         
-        // Calculate worked days from attendance records for this month
-        const workedDays = 22; // Default working days, should be calculated from actual attendance
-        const otHours = record.overtime_hours || 0;
+        // Use actual worked days calculated from attendance records
+        const workedDays = employeeWorkedDays[employeeId] || 0;
+        
+        // Calculate total OT hours for this employee
+        const totalOtHours = filteredData
+          .filter(r => r.employee_id === employeeId)
+          .reduce((sum, r) => {
+            if (r.overtime_hours) return sum + r.overtime_hours;
+            if (r.notes) {
+              try {
+                const parsedNotes = JSON.parse(r.notes);
+                return sum + (parsedNotes.ot_hours || 0);
+              } catch (e) {
+                return sum;
+              }
+            }
+            return sum;
+          }, 0);
+        
+        return { record, workedDays, totalOtHours, perDaySalary, basicSalary, daSalary };
+      }).filter(Boolean);
+
+      const excelData = employeeRecords.map((item, index) => {
+        const { record, workedDays, totalOtHours, perDaySalary, basicSalary, daSalary } = item;
         
         // FIXED CALCULATION: Use the formula specified by user for ALL employees with EXACT precision
         // basic salary earned = basic salary * worked days
@@ -130,7 +176,7 @@ const AttendanceExcelExport: React.FC = () => {
         const basicEarned = basicSalary * workedDays;
         const daEarned = daSalary * workedDays;
         
-        const extraHours = otHours * 60;
+        const extraHours = totalOtHours * 60;
         const grossEarnings = basicEarned + daEarned + extraHours;
         
         // PF calculation (12% of basic + DA earned, max 1800) - keep rounding for PF only
@@ -156,7 +202,7 @@ const AttendanceExcelExport: React.FC = () => {
           'PF.No': record.employees?.pf_number || '',
           'ESI.No': record.employees?.esi_number || '',
           'Worked Days': workedDays,
-          'OT Hrs': otHours,
+          'OT Hrs': totalOtHours,
           'Per Day Salary': perDaySalary,
           'Basic': basicSalary, // This is 60% of per day salary for ALL employees
           'DA': daSalary, // This is 40% of per day salary for ALL employees

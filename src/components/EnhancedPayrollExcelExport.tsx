@@ -119,7 +119,10 @@ const EnhancedPayrollExcelExport: React.FC = () => {
         
         console.log(`Enhanced Export Employee ${record.employees?.name}: Per Day Salary = ${perDaySalary}`);
         
-        const workedDays = 22; // Default working days, should be calculated from actual attendance
+        // Get actual worked days from attendance data
+        const attendanceData = attendanceStats[record.employee_id];
+        const workedDays = attendanceData?.present_days || 0;
+        
         const otHours = record.overtime_amount ? record.overtime_amount / 60 : 0;
         
         // EXACT CALCULATION: Use exact values for Basic and DA (no rounding)

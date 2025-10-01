@@ -378,8 +378,11 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       }
     }
     try {
+      // Exclude 'days' field as it doesn't exist in the database schema
+      const { days, ...formDataWithoutDays } = formData;
+      
       const cleanFormData = {
-        ...formData,
+        ...formDataWithoutDays,
         employee_id: formData.employee_id.trim() || null,
         pan_card: formData.aadhar_card.trim() || null,
         notes: formData.notes.trim() || null,

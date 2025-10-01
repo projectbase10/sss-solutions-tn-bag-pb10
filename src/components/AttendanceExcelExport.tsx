@@ -7,10 +7,15 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
 import ExportDialog from './ExportDialog';
+import { useAllEmployeesAttendanceStats } from '@/hooks/useEmployeeAttendance';
 
 const AttendanceExcelExport: React.FC = () => {
   const [showExportDialog, setShowExportDialog] = useState(false);
+  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const { toast } = useToast();
+  
+  // Fetch attendance stats for actual worked days calculation
+  const { data: attendanceStats = {} } = useAllEmployeesAttendanceStats(selectedMonth);
 
   const { data: attendanceData = [] } = useQuery({
     queryKey: ['attendanceExport'],
@@ -63,6 +68,7 @@ const AttendanceExcelExport: React.FC = () => {
 
   const handleExport = (month: string, format: 'excel' | 'pdf', branchId?: string) => {
     if (format === 'excel') {
+      setSelectedMonth(month); // Set the month for fetching attendance stats
       exportToExcel(month, branchId);
     }
     setShowExportDialog(false);
@@ -120,9 +126,12 @@ const AttendanceExcelExport: React.FC = () => {
         const basicSalary = perDaySalary * 0.60;
         const daSalary = perDaySalary * 0.40;
         
-        // Calculate worked days from attendance records for this month
-        const workedDays = 22; // Default working days, should be calculated from actual attendance
+        // Get ACTUAL worked days from attendance stats (present days)
+        const employeeStats = attendanceStats[record.employee_id];
+        const workedDays = employeeStats?.present_days || 0;
         const otHours = record.overtime_hours || 0;
+        
+        console.log(`Employee ${record.employees?.name}: Actual Worked Days = ${workedDays}`);
         
         // FIXED CALCULATION: Use the formula specified by user for ALL employees with EXACT precision
         // basic salary earned = basic salary * worked days

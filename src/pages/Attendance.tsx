@@ -631,8 +631,8 @@ const Attendance = () => {
       // ESI calculation: 0.75% of MIN(earned amount, 21000) for ESI eligible employees
       let esiAmount = 0;
       if (employee.esi_eligible) {
-        // ESI base = Basic earned + DA earned + OT amount for eligible employees
-        const esiBaseEarnings = earnedBasic + earnedDA + otAmount;
+        // ESI base = Basic earned + DA earned (OT is NOT included in ESI calculation)
+        const esiBaseEarnings = earnedBasic + earnedDA;
         // Cap the ESI calculation at 21,000
         const cappedEsiBase = Math.min(esiBaseEarnings, 21000);
         esiAmount = cappedEsiBase > 0 ? Math.round(cappedEsiBase * 0.0075) : 0;

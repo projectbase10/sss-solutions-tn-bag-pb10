@@ -130,12 +130,30 @@ const AttendanceExcelExport: React.FC = () => {
       const selectedBranch = branches.find(b => b.id === branchId);
       const isSpecialESIBranch = selectedBranch && ['UP-TN', 'UP-BAG'].includes(selectedBranch.name);
 
-      // Enhanced format with CORRECT Basic/DA calculations for ALL employees
-      const excelData = filteredData.map((record, index) => {
+      // Group attendance records by employee to create one row per employee
+      const employeeDataMap = new Map<string, any>();
+      
+      filteredData.forEach(record => {
+        const empId = record.employee_id;
+        if (!employeeDataMap.has(empId)) {
+          employeeDataMap.set(empId, {
+            employee_id: empId,
+            employees: record.employees,
+            total_ot_hours: 0,
+            attendance_count: 0
+          });
+        }
+        const empData = employeeDataMap.get(empId);
+        empData.total_ot_hours += (record.overtime_hours || 0);
+        empData.attendance_count += 1;
+      });
+
+      // Convert to array and create Excel data with one row per employee
+      const excelData = Array.from(employeeDataMap.values()).map((empData, index) => {
         // Get per_day_salary using the improved logic for ALL employees
-        const perDaySalary = getEmployeePerDaySalary(record.employee_id);
+        const perDaySalary = getEmployeePerDaySalary(empData.employee_id);
         
-        console.log(`Employee ${record.employees?.name}: Per Day Salary = ${perDaySalary}`);
+        console.log(`Employee ${empData.employees?.name}: Per Day Salary = ${perDaySalary}`);
         
         // FIXED CALCULATION: Use the formula specified by user for ALL employees with EXACT precision
         // basic salary = perday salary * 0.60
@@ -144,11 +162,11 @@ const AttendanceExcelExport: React.FC = () => {
         const daSalary = perDaySalary * 0.40;
         
         // Get ACTUAL worked days from attendance stats (present days)
-        const employeeStats = attendanceStats[record.employee_id];
+        const employeeStats = attendanceStats[empData.employee_id];
         const workedDays = employeeStats?.present_days || 0;
-        const otHours = record.overtime_hours || 0;
+        const otHours = empData.total_ot_hours;
         
-        console.log(`Employee ${record.employees?.name}: Actual Worked Days = ${workedDays}`);
+        console.log(`Employee ${empData.employees?.name}: Actual Worked Days = ${workedDays}`);
         
         // FIXED CALCULATION: Use the formula specified by user for ALL employees with EXACT precision
         // basic salary earned = basic salary * worked days
@@ -167,20 +185,20 @@ const AttendanceExcelExport: React.FC = () => {
         const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
         
         // Get deductions from employee record
-        const rentDeduction = Math.round(record.employees?.rent_deduction || 0);
+        const rentDeduction = Math.round(empData.employees?.rent_deduction || 0);
         const advance = 0; // Not available in attendance table
         const food = 0; // Not available in attendance table
-        const shoeUniformAllowance = Math.round(record.employees?.shoe_uniform_allowance || 0);
+        const shoeUniformAllowance = Math.round(empData.employees?.shoe_uniform_allowance || 0);
         
         const totalDeduction = pfAmount + esiAmount + rentDeduction + advance + food - shoeUniformAllowance;
         const takeHome = grossEarnings - totalDeduction + extraHours;
 
         return {
           'Sl. No': index + 1,
-          'EMP. No': record.employees?.employee_id || '',
-          'Name of the Employee': record.employees?.name || '',
-          'PF.No': record.employees?.pf_number || '',
-          'ESI.No': record.employees?.esi_number || '',
+          'EMP. No': empData.employees?.employee_id || '',
+          'Name of the Employee': empData.employees?.name || '',
+          'PF.No': empData.employees?.pf_number || '',
+          'ESI.No': empData.employees?.esi_number || '',
           'Worked Days': workedDays,
           'OT Hrs': otHours,
           'Per Day Salary': perDaySalary,
@@ -197,10 +215,8 @@ const AttendanceExcelExport: React.FC = () => {
           'Food': food,
           'Shoe & Uniform': shoeUniformAllowance,
           'Take Home': takeHome,
-          'Month': exportMonth || record.date?.substring(0, 7),
-          'Status': record.status || 'present',
-          'Date': record.date,
-          'Branch': record.employees?.branches?.name || 'N/A'
+          'Month': exportMonth,
+          'Branch': empData.employees?.branches?.name || 'N/A'
         };
       });
 

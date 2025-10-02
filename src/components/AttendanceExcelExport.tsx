@@ -7,15 +7,10 @@ import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import * as XLSX from 'xlsx';
 import ExportDialog from './ExportDialog';
-import { useAllEmployeesAttendanceStats } from '@/hooks/useEmployeeAttendance';
 
 const AttendanceExcelExport: React.FC = () => {
   const [showExportDialog, setShowExportDialog] = useState(false);
-  const [selectedMonth, setSelectedMonth] = useState<string>('');
   const { toast } = useToast();
-  
-  // Fetch attendance stats for actual worked days calculation
-  const { data: attendanceStats = {} } = useAllEmployeesAttendanceStats(selectedMonth);
 
   const { data: attendanceData = [] } = useQuery({
     queryKey: ['attendanceExport'],
@@ -66,10 +61,9 @@ const AttendanceExcelExport: React.FC = () => {
     }
   });
 
-  const handleExport = (month: string, format: 'excel' | 'pdf', branchId?: string) => {
+  const handleExport = async (month: string, format: 'excel' | 'pdf', branchId?: string) => {
     if (format === 'excel') {
-      setSelectedMonth(month); // Set the month for fetching attendance stats
-      exportToExcel(month, branchId);
+      await exportToExcel(month, branchId);
     }
     setShowExportDialog(false);
   };
@@ -93,8 +87,31 @@ const AttendanceExcelExport: React.FC = () => {
     return basicSalary + daAmount;
   };
 
-  const exportToExcel = (exportMonth: string, branchId?: string) => {
+  const exportToExcel = async (exportMonth: string, branchId?: string) => {
     try {
+      // Fetch attendance stats for the selected month directly
+      const { data: monthAttendanceData } = await supabase
+        .from('attendance')
+        .select('employee_id, status, date')
+        .gte('date', `${exportMonth}-01`)
+        .lte('date', `${exportMonth}-31`);
+
+      // Calculate present days per employee for this specific month
+      const attendanceStats: Record<string, { present_days: number }> = {};
+      
+      if (monthAttendanceData && Array.isArray(monthAttendanceData)) {
+        monthAttendanceData.forEach((record: any) => {
+          if (!attendanceStats[record.employee_id]) {
+            attendanceStats[record.employee_id] = { present_days: 0 };
+          }
+          if (record.status === 'present') {
+            attendanceStats[record.employee_id].present_days += 1;
+          }
+        });
+      }
+
+      console.log('Attendance stats for month:', exportMonth, attendanceStats);
+
       let filteredData = attendanceData;
       
       if (exportMonth) {

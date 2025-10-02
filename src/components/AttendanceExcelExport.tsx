@@ -96,52 +96,56 @@ const AttendanceExcelExport: React.FC = () => {
         .gte('date', `${exportMonth}-01`)
         .lte('date', `${exportMonth}-31`);
 
-      // Calculate present days per employee - use ONLY aggregate data when available
-      // This ensures we don't mix aggregate records with individual daily records
+      // Calculate present days per employee - prioritize aggregate data
       const attendanceStats: Record<string, { present_days: number }> = {};
       
       if (monthAttendanceData && Array.isArray(monthAttendanceData)) {
-        // First, identify which employees have aggregate data
-        const employeesWithAggregate = new Set<string>();
+        // Process each employee's attendance
+        const processedEmployees = new Set<string>();
         
-        monthAttendanceData.forEach((record: any) => {
-          // Check for aggregate data (present_days column)
+        // First pass: Look for aggregate records (present_days column or notes JSON)
+        for (const record of monthAttendanceData) {
+          if (processedEmployees.has(record.employee_id)) continue;
+          
+          // Check present_days column first
           const directPresent = Number(record.present_days) || 0;
           if (directPresent > 0) {
-            employeesWithAggregate.add(record.employee_id);
-            // Use the aggregate value directly (don't accumulate)
-            if (!attendanceStats[record.employee_id]) {
-              attendanceStats[record.employee_id] = { present_days: directPresent };
-            }
-          } else if (record.notes && !employeesWithAggregate.has(record.employee_id)) {
-            // Check notes field for aggregate data
+            attendanceStats[record.employee_id] = { present_days: directPresent };
+            processedEmployees.add(record.employee_id);
+            continue;
+          }
+          
+          // Check notes field for aggregate data
+          if (record.notes) {
             try {
               const parsedNotes = JSON.parse(record.notes);
               const notesPresent = Number(parsedNotes.present_days) || 0;
               if (notesPresent > 0) {
-                employeesWithAggregate.add(record.employee_id);
-                // Use the aggregate value from notes
-                if (!attendanceStats[record.employee_id]) {
-                  attendanceStats[record.employee_id] = { present_days: notesPresent };
-                }
+                attendanceStats[record.employee_id] = { present_days: notesPresent };
+                processedEmployees.add(record.employee_id);
+                continue;
               }
             } catch (e) {
               // Ignore parse errors
             }
           }
-        });
-
-        // For employees WITHOUT aggregate data, count individual present records
-        monthAttendanceData.forEach((record: any) => {
-          if (!employeesWithAggregate.has(record.employee_id)) {
-            if (!attendanceStats[record.employee_id]) {
-              attendanceStats[record.employee_id] = { present_days: 0 };
-            }
-            if (record.status === 'present') {
-              attendanceStats[record.employee_id].present_days += 1;
-            }
+        }
+        
+        // Second pass: For employees without aggregate data, count individual present records
+        for (const record of monthAttendanceData) {
+          if (processedEmployees.has(record.employee_id)) continue;
+          
+          if (!attendanceStats[record.employee_id]) {
+            attendanceStats[record.employee_id] = { present_days: 0 };
           }
-        });
+          
+          if (record.status === 'present') {
+            attendanceStats[record.employee_id].present_days += 1;
+          }
+        }
+        
+        // Mark all employees as processed
+        Object.keys(attendanceStats).forEach(empId => processedEmployees.add(empId));
       }
 
       console.log('Attendance stats for month:', exportMonth, attendanceStats);

@@ -89,14 +89,15 @@ const AttendanceExcelExport: React.FC = () => {
 
   const exportToExcel = async (exportMonth: string, branchId?: string) => {
     try {
-      // Fetch attendance stats for the selected month directly
+      // Fetch attendance stats for the selected month directly with ALL needed columns
       const { data: monthAttendanceData } = await supabase
         .from('attendance')
-        .select('employee_id, status, date')
+        .select('employee_id, status, date, present_days, absent_days, late_days, notes')
         .gte('date', `${exportMonth}-01`)
         .lte('date', `${exportMonth}-31`);
 
-      // Calculate present days per employee for this specific month
+      // Calculate present days per employee using CORRECT 3-priority logic
+      // This matches the same logic used in payroll calculations
       const attendanceStats: Record<string, { present_days: number }> = {};
       
       if (monthAttendanceData && Array.isArray(monthAttendanceData)) {
@@ -104,7 +105,33 @@ const AttendanceExcelExport: React.FC = () => {
           if (!attendanceStats[record.employee_id]) {
             attendanceStats[record.employee_id] = { present_days: 0 };
           }
-          if (record.status === 'present') {
+          
+          // PRIORITY 1: Direct column value (present_days) - if it exists, use it
+          const directPresent = Number(record.present_days) || 0;
+          
+          if (directPresent > 0) {
+            // Accumulate direct column value (for records that have aggregate data)
+            attendanceStats[record.employee_id].present_days += directPresent;
+          } else if (record.notes) {
+            // PRIORITY 2: Parse from notes JSON field
+            try {
+              const parsedNotes = JSON.parse(record.notes);
+              const notesPresent = Number(parsedNotes.present_days) || 0;
+              if (notesPresent > 0) {
+                // Use notes value (this is typically an aggregate already)
+                attendanceStats[record.employee_id].present_days = notesPresent;
+              } else if (record.status === 'present') {
+                // PRIORITY 3: Fallback to status count
+                attendanceStats[record.employee_id].present_days += 1;
+              }
+            } catch (e) {
+              // PRIORITY 3: Fallback to status count if JSON parse fails
+              if (record.status === 'present') {
+                attendanceStats[record.employee_id].present_days += 1;
+              }
+            }
+          } else if (record.status === 'present') {
+            // PRIORITY 3: Fallback to status count
             attendanceStats[record.employee_id].present_days += 1;
           }
         });

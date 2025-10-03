@@ -625,8 +625,8 @@ const Attendance = () => {
       
       const grossEarnings = earnedBasic + earnedDA + otAmount + allowanceAmount;
       
-      // Calculate deductions
-      const pfAmount = Math.min(Math.round((earnedBasic + earnedDA) * 0.12), 1800);
+      // Calculate deductions - check PF eligibility first
+      const pfAmount = employee.pf_eligible ? Math.min(Math.round((earnedBasic + earnedDA) * 0.12), 1800) : 0;
       
       // ESI calculation: 0.75% of MIN(earned amount, 21000) for ESI eligible employees
       let esiAmount = 0;

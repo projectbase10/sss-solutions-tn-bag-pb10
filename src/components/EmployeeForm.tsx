@@ -192,7 +192,7 @@ const EmployeeForm: React.FC<EmployeeFormProps> = ({
       const {
         data,
         error
-      } = await supabase.from('employees').select('id, branch_id').eq('pan_card', aadharCard.trim());
+      } = await supabase.from('employees').select('id, branch_id, aadhar_card').or(`aadhar_card.eq.${aadharCard.trim()},pan_card.eq.${aadharCard.trim()}`);
       if (error) {
         console.error('Error validating Aadhar card:', error);
         return true;

@@ -30,6 +30,8 @@ const PayrollExcelExport = () => {
             da_amount,
             per_day_salary,
             day_rate,
+            pf_eligible,
+            esi_eligible,
             branches (
               name,
               ot_rate
@@ -283,12 +285,13 @@ const PayrollExcelExport = () => {
           const uncappedGrossEarnings = earnedBasic + earnedDA + extraHours;
           const cappedGrossEarnings = Math.min(uncappedGrossEarnings, 15000);
           
-          const uncappedPf = Math.round((earnedBasic + earnedDA) * 0.12);
-          const cappedPf = Math.min(uncappedPf, 1800);
+          // PF calculation - check eligibility first
+          const uncappedPf = employee?.pf_eligible ? Math.round((earnedBasic + earnedDA) * 0.12) : 0;
+          const cappedPf = employee?.pf_eligible ? Math.min(uncappedPf, 1800) : 0;
           
-           // ESI calculation - Basic + DA only (OT excluded)
+           // ESI calculation - Basic + DA only (OT excluded), check eligibility first
            const esiBaseAmount = earnedBasic + earnedDA;
-           const esi = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
+           const esi = employee?.esi_eligible ? (esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075)) : 0;
           const rentDeduction = 0; // Not in schema
           const foodDeduction = Math.round(Number(record.other_deductions || 0));
           const shoeUniformAllowance = Math.round(Number(record.allowances || 0));

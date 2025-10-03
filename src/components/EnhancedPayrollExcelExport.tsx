@@ -30,7 +30,8 @@ const EnhancedPayrollExcelExport: React.FC = () => {
             basic_salary,
             da_amount,
             da_rate,
-            day_rate,
+            pf_eligible,
+            esi_eligible,
             branch_id,
             branches (
               name
@@ -137,12 +138,13 @@ const EnhancedPayrollExcelExport: React.FC = () => {
         const extraHours = Math.round(otHours * 60);
         const grossEarnings = basicEarned + daEarned + extraHours;
         
-        // PF calculation (12% of basic + DA earned, max 1800)
-        const pfAmount = Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800);
+        // PF calculation (12% of basic + DA earned, max 1800) - check eligibility first
+        const employee = filteredData.find(r => r.employee_id === record.employee_id)?.employees;
+        const pfAmount = employee?.pf_eligible ? Math.min(Math.round((basicEarned + daEarned) * 0.12), 1800) : 0;
         
-        // ESI calculation - Basic + DA only (OT excluded for all branches)
+        // ESI calculation - Basic + DA only (OT excluded for all branches) - check eligibility first
         const esiBaseAmount = basicEarned + daEarned;
-        const esiAmount = esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075);
+        const esiAmount = employee?.esi_eligible ? (esiBaseAmount > 21000 ? 0 : Math.round(esiBaseAmount * 0.0075)) : 0;
         
         const rentDeduction = Math.round(0); // Not available in current payroll select
         const advance = Math.round(record.advance_deduction || 0);

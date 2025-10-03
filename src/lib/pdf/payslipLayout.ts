@@ -51,6 +51,8 @@ export interface PayslipData {
     da_amount?: number;
     shoe_uniform_allowance?: number;
     other_allowances?: number;
+    pf_eligible?: boolean;
+    esi_eligible?: boolean;
   };
   branch: {
     name: string;
@@ -136,12 +138,11 @@ export const drawPayslipSection = (
   const fb_grossEarnings = fb_basicPlusDA + fb_hraAmount + fb_allowancesAmount + fb_otAmount;
 
   const pfBase = basicEarned + daEarned;
-  const fb_pf = Math.min(Math.round(pfBase * 0.12), 1800);
+  const fb_pf = employee.pf_eligible ? Math.min(Math.round(pfBase * 0.12), 1800) : 0;
   
-  // ESI calculation - 0.75% of Basic + DA only (OT excluded), only if employee is ESI eligible
-  const isESIEligible = employee.esi_number && employee.esi_number.trim() !== '';
+  // ESI calculation - 0.75% of Basic + DA only (OT excluded), check eligibility flag
   const esiBase = pfBase; // Only Basic + DA (no OT)
-  const fb_esi = isESIEligible && esiBase <= 21000 ? Math.round(esiBase * 0.0075) : 0;
+  const fb_esi = employee.esi_eligible ? (esiBase <= 21000 ? Math.round(esiBase * 0.0075) : 0) : 0;
 
   const foodDeduction = (payroll?.food ?? stats.food ?? 0);
   const uniformDeduction = (payroll?.uniform ?? stats.uniform ?? 0);
@@ -303,7 +304,7 @@ export const drawPayslipSection = (
   
   const deductions = [
     ['PF', pf.toFixed(2)],
-    ['ESI', esi > 0 ? esi.toFixed(2) : 'N/A'],
+    ['ESI', esi.toFixed(2)],
     ['Rent Deduction', rentDeduction.toFixed(2)],
     ['Advance', advanceDeduction.toFixed(2)],
     ['Uniform', uniformDeduction.toFixed(2)],

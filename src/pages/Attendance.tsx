@@ -771,7 +771,9 @@ const Attendance = () => {
             day_rate: employee.day_rate || 0,
             da_amount: employee.da_amount || 0,
             shoe_uniform_allowance: employee.shoe_uniform_allowance || 0,
-            other_allowances: employee.other_allowances || 0
+            other_allowances: employee.other_allowances || 0,
+            pf_eligible: employee.pf_eligible,
+            esi_eligible: employee.esi_eligible
           },
           branch: {
             name: branch?.name || 'N/A',

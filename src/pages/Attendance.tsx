@@ -562,8 +562,11 @@ const Attendance = () => {
       attendanceMap[record.employee_id] = record;
     });
 
-    // Filter employees who have attendance data for this month
-    const employeesWithData = employeesToExport.filter(employee => attendanceMap[employee.id]);
+    // Filter employees who have attendance data for this month with present_days > 0
+    const employeesWithData = employeesToExport.filter(employee => {
+      const record = attendanceMap[employee.id];
+      return record && record.present_days > 0;
+    });
 
     if (employeesWithData.length === 0) {
       const branchText = branchId ? ' for selected branch' : '';
@@ -1049,10 +1052,10 @@ const Attendance = () => {
                 </div>
 
                 <div className="flex justify-end space-x-2">
-                  <Button variant="outline" onClick={() => setShowMarkAttendance(false)}>
+                  <Button type="button" variant="outline" onClick={() => setShowMarkAttendance(false)}>
                     Cancel
                   </Button>
-                  <Button onClick={handleMarkAttendance} disabled={!attendanceForm.employee_id}>
+                  <Button type="button" onClick={handleMarkAttendance} disabled={!attendanceForm.employee_id}>
                     Mark Attendance
                   </Button>
                 </div>
@@ -1215,6 +1218,7 @@ const Attendance = () => {
                       <td className="border border-gray-300 p-2 text-center">
                         <div className="flex justify-center space-x-1">
                           <Button
+                            type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => handleEdit(employee.id)}
@@ -1223,6 +1227,7 @@ const Attendance = () => {
                             <Edit className="h-4 w-4" />
                           </Button>
                           <Button
+                            type="button"
                             variant="outline"
                             size="sm"
                             onClick={() => handleDeductions(employee.id)}
@@ -1285,10 +1290,10 @@ const Attendance = () => {
               />
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowDeductionsDialog(false)}>
+              <Button type="button" variant="outline" onClick={() => setShowDeductionsDialog(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateDeductions}>
+              <Button type="button" onClick={handleUpdateDeductions}>
                 Update Deductions
               </Button>
             </div>
@@ -1408,10 +1413,10 @@ const Attendance = () => {
                 </div>
             </div>
             <div className="flex justify-end space-x-2">
-              <Button variant="outline" onClick={() => setShowEditDialog(false)}>
+              <Button type="button" variant="outline" onClick={() => setShowEditDialog(false)}>
                 Cancel
               </Button>
-              <Button onClick={handleUpdateEdit}>
+              <Button type="button" onClick={handleUpdateEdit}>
                 Update Attendance
               </Button>
             </div>

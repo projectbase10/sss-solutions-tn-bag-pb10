@@ -663,7 +663,8 @@ const Attendance = () => {
         'Shoe & Uniform': uniform,
         'Allowance': allowanceAmount,
         'Total Deduction': totalDeductions,
-        'Take Home': takeHome
+        'Take Home': takeHome,
+        'Payment': employee.mode_of_payment || 'N/A'
       };
     });
 
@@ -672,7 +673,10 @@ const Attendance = () => {
     const csvContent = [
       headers.join(','),
       ...excelData.map(row => 
-        headers.map(header => `"${row[header] || ''}"`).join(',')
+        headers.map(header => {
+          const value = row[header];
+          return `"${value !== null && value !== undefined ? value : 0}"`;
+        }).join(',')
       )
     ].join('\n');
 
@@ -720,7 +724,10 @@ const Attendance = () => {
         return acc;
       }, {} as Record<string, any>) || {};
 
-      const employeesWithData = employeesToExport.filter(employee => attendanceStats[employee.id]);
+      const employeesWithData = employeesToExport.filter(employee => {
+        const stats = attendanceStats[employee.id];
+        return stats && stats.present_days > 0;
+      });
       if (employeesWithData.length === 0) {
         const branchText = branchId ? ' for selected branch' : '';
         toast({
